@@ -288,3 +288,10 @@ $ git push origin :refs/tags/v0.9
 6. [Git Book](https://git-scm.com/book/zh/v2)
 7. [.gitignore 文件常用配置](https://github.com/github/gitignore)
 
+
+##### 九、参与开源项目
+基本步骤：
+1. 将他人的开源仓库 fork 到自己的 Github 上；
+2. 将该开源仓库从自己的 Github 上克隆到本地；`git clone 项目地址`
+3. 修改该项目；
+4. 推送一个 pull reaquest 到他人开源仓库。（当然他人可选择接受或不接受）
