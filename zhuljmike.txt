@@ -1,4 +1,0 @@
-学习github的使用
-1、在github上fork他人的项目
-2、从自己的帐号下clone仓库，然后在本地修改
-3、推送到自己的github仓库上去
