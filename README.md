@@ -1,3 +1,7 @@
+#### 写在前面
+想学习提交代码的同学请fork这个仓库并且clone到本地进行修改，并且修改名为pull_request_test的文件，在里面添加自己的信息，push上来之后在pull request。
+
+
 #####  一、Git 和 SVN 的区别
 
 |         |  类型  |                             描述                             |
