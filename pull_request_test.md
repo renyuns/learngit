@@ -9,3 +9,7 @@ I am learning how to use git and github and this is my first time to pull reques
 
 #### xiang
 my first pull request.
+
+#### Yang
+
+contact github at first
