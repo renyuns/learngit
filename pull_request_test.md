@@ -13,3 +13,7 @@ my first pull request.
 #### Yang
 
 contact github at first
+
+#### WenJing
+
+GitHub is very useful 
