@@ -17,3 +17,6 @@ contact github at first
 #### WenJing
 
 GitHub is very useful 
+
+#### zzy
+learn how to use   `pull request`
