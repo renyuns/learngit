@@ -35,3 +35,7 @@ learn git
 #### xyy
 
 Open the door of github
+
+#### litchi20
+
+study pull request
