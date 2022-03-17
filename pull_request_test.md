@@ -36,4 +36,10 @@ learn git
 
 Open the door of github
 
-do some test
+#### litchi20
+
+study pull request
+
+#### ken
+
+tai yang shi xin zhi suo xiang, bie liu lian ying huo zhi guang
