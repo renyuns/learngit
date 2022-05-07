@@ -47,3 +47,7 @@ tai yang shi xin zhi suo xiang, bie liu lian ying huo zhi guang
 #### believe001
 
 oh! Git is amazing!
+
+### wei
+
+biejuanle biejuanle,gan jin run ba!! 
