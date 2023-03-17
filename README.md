@@ -24,46 +24,30 @@ $ git config user.name "Your Name"
 $ git config user.email "youremail@example.com"
 
 ### 查看全局配置的 用户名 和 email 
-$ git config --global user.name     查看用户名
-$ git config --global user.email     查看邮箱地址
+$ git config --global user.name
+$ git config --global user.email
 
 ### 查看当前仓库配置的 用户名 和 email 
-$ git config user.name     查看用户名
-$ git config user.email     查看邮箱地址
+$ git config user.name
+$ git config user.email
 
 # Git 是分布式版本控制系统，所以，每个机器都必须自报家门：你的名字和Email地址
 # git config 命令的 --global 参数，用了这个参数，表示你这台机器上所有的 Git 仓库都会使用这个配置，当然也可以对某个仓库指定不同的用户名和Email地址(不加 --global)。
 
-$ git config --list --show-origin 查看所有的配置以及它们所在的文件
+$ git config --list    查看所有配置
+$ git config --list --show-origin    查看所有的配置以及它们所在的文件
+$ git config --global color.ui true    让Git显示颜色，会让命令输出看起来更醒目
 ```
 
 #####  三、相关命令
 
 ```
-(所有命令都在 Git Bash 中运行)
 $ git                           查看 git 的相关命令 (git --help)
 $ git --version                 查看 git 的版本
-$ git config                    查看 git config 的相关命令
-$ git pull origin develop       从远程(origin) 的 develop 分支拉取代码
 ```
 
-###### 1. 初始化本地仓库: 在 *Git Bash* 中输入对应的命令
+###### 1. 初始化本地仓库: 
 ```
-注: 下面所有的命令使用的时候不用拷贝最前面的 $ 符号
-
-$ cd d:
-$ mkdir learngit
-$ cd learngit
-$ pwd
-
-# cd: change directory 改变目录
-# mkdir  创建目录
-# pwd    用于显示当前目录
-注意: 为避免遇到各种奇怪的问题,确保目录名 (包括父目录) 不含中文
-```
-
-```
-# 不想要 git 管理跟踪的文件,可以在仓库根目录添加 .gitignore 文件,在里面写对应的规则
 $ git init              把当前目录初始化为 git 仓库
 $ ls -ah                查看当前目录下的文件,包含隐藏文件 (不带 -ah 看不了隐藏文件)
 ```
@@ -77,7 +61,8 @@ $ git commit -m "description"     如: git commit -m "add readme.txt"
 # 1. add 添加该文件到仓库, 
 # 添加许多同种类型的文件,可以使用通配符 * (记得加引号)  如: git add "*.txt"  命令就是添加所有 .txt 文件
 # 2. commit 提交该文件到仓库, description 为你对该次提交的描述说明, 
-注意: 可以多次 add 不同的文件,commit 可以一次提交多个文件
+注意: 1）可以多次 add 不同的文件,commit 可以一次提交多个文件；
+	 2）git commit 没有-m 及描述，会进入vim
 ```
 
 ###### 3. 查看仓库目前状态 (项目是否有修改、添加、未追踪的文件等)
@@ -87,14 +72,11 @@ $ git status
 
 ###### 4. 查看修改内容,查看文件不同 (difference)
 ```
-$ git diff 
-$ git diff <file>                
-$ git diff --cached
-$ git diff HEAD -- <file>
-# git diff 查看工作区(work dict)和暂存区(stage)的区别
-# git diff --cached 查看暂存区(stage)和分支(master)的区别
-# git diff HEAD -- <file> 查看工作区和版本库里面最新版本的区别
-如: git diff readme.txt  表示查看 readme.txt 修改了什么,有什么不同
+# git diff    查看工作区(work dict)和暂存区(stage)的区别
+# git diff HEAD   查看工作区(work dict)和上一次commit后的区别
+# git diff --cached    查看暂存区(stage)和上一次commit后的区别
+# git diff HEAD -- <file>    查看工作区和版本库里面最新版本的区别
+如: git diff readme.txt    表示查看 readme.txt 修改了什么,有什么不同
 ```
 
 ###### 5. 查看提交日志
@@ -121,7 +103,9 @@ $ git reset --hard <commit_id>
 # HEAD^^  上上一个版本
 # HEAD~100   往上100个版本
 
-# 回退到 commit_id 对应的那个版本,commit_id 为版本号,只需要前几位就行
+# 回退到 commit_id    对应的那个版本,commit_id 为版本号,只需要前几位就行
+# git reset           移除所有暂存区的修改，但不会修改工作区
+# git reset --hard    移除所有暂存区的修改，并强制删除所有工作区的修改
 ```
 
 ###### 7. 查看命令历史 (用于版本切换)
