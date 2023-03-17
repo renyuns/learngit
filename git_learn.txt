@@ -1,0 +1,561 @@
+
+大厂高频算法题
+地址：https://github.com/afatcoder/LeetcodeTop
+02. 算法可视化
+地址：https://github.com/algorithm-visualizer/algorithm-visualizer
+动态演示算法 在线地址：https://algorithm-visualizer.org/
+地址：动态演示算https://github.com/MisterBooo/LeetCodeAnimation
+ Hello Algorithm
+地址：https://github.com/geekxh/hello-algorithm
+小浩算法图解100道/和小浩学算法(0701版本).pdf
+https://github.com/geekxh/hello-algorithm/blob/master/
+
+
+
+git clone http://git-nas03.anwsoft.com:8088/YuYongjie/anw_desay_23mm_carplay.git
+git clone -b Modify_AirPlayServerSequence http://git-nas03.anwsoft.com:8088/YuYongjie/anw_desay_23mm_carplay.git
+git push http://git-nas03.anwsoft.com:8088/YuYongjie/anw_desay_23mm_carplay.git
+
+
+
+Git教程-廖雪峰
+	https://www.liaoxuefeng.com/wiki/896043488029600
+
+git修改已经提交的commit信息
+	https://www.cnblogs.com/ykpkris/p/15356969.html
+
+Git教程-易百教程
+	https://www.yiibai.com/git
+Git官方文档
+	https://git-scm.com/book/zh/v2
+
+Quick Reference
+
+
+
+linux 安装git：
+	sudo apt-get install git
+	或者下载安装包：
+	./config, make, sudo make install
+
+$ git config --global user.name "Your Name"
+$ git config --global user.email "email@example.com"
+	-global参数，用了这个参数，表示你这台机器上所有的Git仓库都会使用这个配置
+	
+$ git config user.name
+$ git config user.email
+$ git config --list	
+	查看git设置
+
+$ git config --global color.ui true
+	让Git显示颜色，会让命令输出看起来更醒目
+
+
+$ git init
+	通过git init命令把这个目录变成Git可以管理的仓库
+
+$ git add file1.txt
+$ git add file2.txt file3.txt
+$ git commit -m "add 3 files."
+	//git commit 无描述会进入vi
+
+$ git diff readme.txt 
+
+	git diff：比较工作区跟暂存区的修改。
+	git diff HEAD：比较工作区跟上一次commit后的修改。
+	git diff --cached：比较暂存区跟上一次commit后的修改。
+
+$ git diff HEAD -- readme.txt
+	用git diff HEAD -- readme.txt命令可以查看工作区和版本库里面最新版本的区别
+
+$ git log
+$ git log --pretty=oneline
+	git log后按q退出，h帮助
+
+
+
+*** 版本回退 ***
+
+	HEAD表示当前版本
+	上一个版本就是HEAD^
+	上上一个版本就是HEAD^^
+	往上100个版本写100个^比较容易数不过来，所以写成HEAD~100
+	也可以用具体版本号的头几位表示
+$ git reset --hard HEAD^
+$ git log
+$ git reset --hard 1094a
+
+git reset
+	移除所有暂存区的修改，但不会修改工作区
+git reset --hard
+	移除所有暂存区的修改，并强制删除所有工作区的修改
+
+$ git reflog
+	git reflog用来记录你的每一次命令
+
+$ git revert
+	如果已经有A -> B -> C，想回到B：
+	
+	方法一：reset到B，丢失C：
+		A -> B
+	方法二：再提交一个revert反向修改，变成B：
+		A -> B -> C -> B
+		C还在，但是两个B是重复的
+
+	根据需求，也许C就是瞎提交错了（比如把密码提交上去了），必须reset
+	如果C就是修改，现在又要改回来，将来可能再改成C，那你就revert
+	
+	revert命令使用：
+	git revert -n commitID
+	git commit -m "恢复第三次修改"
+
+
+*** 撤销修改 ***
+
+$ git checkout -- readme.txt
+	git checkout -- file可以丢弃工作区的修改
+$ git reset HEAD readme.txt
+	命令git reset HEAD <file>可以把暂存区的修改撤销掉（unstage），重新放回工作区
+	git reset命令既可以回退版本，也可以把暂存区的修改回退到工作区。当我们用HEAD时，表示最新的版本
+$ git checkout -- readme.txt
+	//git checkout -- file命令中的--很重要，没有--，就变成了“切换到另一个分支”的命令
+
+
+git add的反向命令git checkout，撤销工作区修改，即把暂存区最新版本转移到工作区，
+git commit的反向命令git reset HEAD，就是把仓库最新版本转移到暂存区。
+
+
+最新版的git提示都已经更换成了restore
+	原来的git checkout 可以使用 git restore 代替
+	原来的git reset HEAD 可以使用 git restore --staged 代替
+	原来的git checkout branchName 可以用 git switch branchName 代替。
+	
+	情况1：在工作区做了修改，并未添加到暂存区，想撤销工作区的修改，用 git restore file;
+	情况2：在工作区做了修改，并用git add 添加到了暂存区，未提交；想撤销，分两步，1.先撤销暂存区的修改，用 git restore --staged file, 2.然后参考情况1撤销工作区的修改；
+	情况3：在工作区做了修改，且git add git commit添加并提交了内容，想撤销本次提交，直接用 git reset --hard HEAD^回退版本，即可保证工作区，暂存区，版本库都是上次的内容
+
+	使用restore，在未给定 source 的情况下，如果使用 `--staged` ，从 `HEAD` 恢复暂存区，否则从暂存区恢复工作区。
+	举例：
+	比如文件 test 内容为 A，已提交到历史库，工作区将 test 改为 AA，然后 add 到暂存区，工作区再将 test 改为 AAA。
+	此时运行 git restore test，会把工作区的 test 改为 AA。
+	git restore --source=HEAD test 会把工作区改为 A	
+
+	git restore <file> 
+	git checkout --<file>
+	效果一样 //丢弃工作区的修改
+
+	git restore --staged <file>
+	git reset HEAD <file>
+	效果一样 //丢弃暂存区的修改
+
+	从暂存区恢复工作区，
+		git resotre --worktree readme.txt
+	从master恢复暂存区
+		git restore --staged readme.txt
+	从master同时恢复工作区和暂存区
+		git restore --source=HEAD --staged --worktree readme.txt
+
+
+*** 远程仓库 ***
+
+创建SSH Key：
+	$ ssh-keygen -t rsa -C "youremail@example.com"
+拷贝生成的公钥内容：
+	$ cat ~/.ssh/id_rsa.pub 
+
+多账号时，需要创建多个SSH Key：
+	$ ssh-keygen -t rsa -C 'xxxxx@company.com' -f ~/.ssh/gitee_id_rsa
+	Or
+	$ ssh-keygen -t rsa -C 'qd_zhangx@126.com'
+	Generating public/private rsa key pair.
+	Enter file in which to save the key (C:\Users\12475/.ssh/id_rsa): C:\Users\12475/.ssh/id_rsa_gitlab
+
+Git配置多个SSH-Key
+	https://www.cnblogs.com/cosmos-wong/p/15868724.html
+	//https://gitee.com/help/articles/4229#article-header0
+
+
+本地存在一个git仓库，将本地仓库与远程仓库关联：
+$ git remote add origin git@github.com:michaelliao/learngit.git
+	本地库关联（添加）一个远程库
+	远程库的名字就是origin，这是Git默认的叫法，也可以改成别的。
+	远程库全名叫git@github.com:michaelliao/learngit.git
+	
+		你的本地git库是learngit，有3台远程服务器，都有同样的learngit，现在你的本地关联了3个远程服务器，怎么区分他们呢？
+		git remote add server-1 git@1.2.3.4:/user/learngit.git
+		git remote add server-2 git@2.3.4.5:/user/learngit.git
+		git remote add server-2 git@3.4.5.6:/user/learngit.git
+		分别把名字叫server-1, server-2, server-3
+		一般来说，我们只关联一个远程库，就叫origin	
+	
+$ git push -u origin master
+	推送master分支的所有内容
+	使用-u参数，把本地的master分支和远程的master分支关联起来，在以后的推送或者拉取时就可以简化命令（不需要再关联）
+
+$ git push origin master
+	把本地master分支的最新修改推送至远程库
+	
+$ git remote -v
+	git remote -v查看远程库信息
+	
+$ git remote rm origin
+	解除了本地和远程的绑定关系，并不是物理上删除了远程库		
+
+
+本地没有仓库，从远程下载仓库，并关联：
+$ git clone git@github.com:michaelliao/gitskills.git
+	git clone克隆一个本地库	
+
+	git clone -b <branch name> git@github.com:michaelliao/gitskills.git
+	克隆远程的一个分支到本地
+	
+
+
+
+*** 创建与合并分支 ***
+
+HEAD指向当前分支
+master指向master分支提交点
+
+查看分支：git branch
+	git branch命令会列出所有分支，当前分支前面会标一个*号
+
+创建分支：git branch <name>
+切换分支：git checkout <name>或者git switch <name>
+
+创建+切换分支：git checkout -b <name>或者git switch -c <name>
+
+合并某分支到当前分支：git merge <name>
+	合并操作（ merge ）只对当前所在分支产生影响
+
+删除本地分支：git branch -d <name>
+强制删除本地分支：git branch -D <name>
+
+删除多个本地分支：git branch -d 分支1[,分支名2,分支名3...]
+
+删除远程分支
+git push origin --delete <name>
+
+注意：工作区和暂存区是所有分支共享，这意味着不同分支间会影响
+			切换分支前，保证当前工作区和暂存区修改都已提交。或将未提交的内容 stash
+
+
+$ git log --graph --pretty=oneline --abbrev-commit
+	查看分支的合并情况
+	
+$ git log --graph
+	查看分支合并图。
+
+领先分支合并到落后分支，会改变落后分支(常用)
+落后分支合并到领先分支，会提示"Already up to data."
+两分支分出后，若均有提交（即都有领先），合并时可能出现冲突，不冲突时可能顺利合并
+
+当Git无法自动合并分支时，就必须首先解决冲突。解决冲突后，再提交，合并完成。
+解决冲突就是把Git合并失败的文件手动编辑为我们希望的内容，再提交。
+
+	git merge
+		//出现冲突
+	修改冲突文件
+	git add .
+	git commit -m "note"
+	git branch -d <name>
+
+
+
+*** 解决冲突 ***
+
+合并分支时，如果可能，Git会用Fast forward模式，但这种模式下，删除分支后，会丢掉分支信息。
+禁用Fast forward模式，Git会在merge时生成一个新的commit，这样，从分支历史上就可以看出分支信息。
+
+$ git merge --no-ff -m "merge with no-ff" dev
+	--no-ff参数，表示禁用Fast forward：
+	因为本次合并要创建一个新的commit，所以加上-m参数，把commit描述写进去。
+	
+	使用--no-ff参数，合并后，查看git log，如下：
+$ git log --graph --pretty=oneline --abbrev-commit
+*   e1e9c68 (HEAD -> master) merge with no-ff
+|\  
+| * f52c633 (dev) add merge
+|/  
+*   cf810e4 conflict fixed
+	
+	git 的 merge 与 no-ff merge 测试：
+		https://app.yinxiang.com/fx/5cb80672-82b7-4527-a790-6e216b8267d5
+
+
+
+*** Bug分支 ***
+
+$ git stash
+	或者 
+$ git stash save "stash_test" //添加备注信息
+	把当前工作现场“储藏”起来，等以后恢复现场后继续工作
+	用git status查看工作区，就是干净的
+	
+	为什么要用git stash
+		//https://blog.csdn.net/ForMyQianDuan/article/details/78750434
+		
+		要在stash中包含未跟踪的文件
+		git stash --include-untracked
+		# or
+		git stash -u
+		
+		git stash -a //其中-a代表所有（追踪的&未追踪的）
+	
+$ git stash list
+	查看储藏的工作现场
+	显示: stash@{index}: WIP on [分支名]: [最近一次的commitID] [最近一次的提交信息]
+	
+一是用git stash apply恢复，但是恢复后，stash内容并不删除，你需要用git stash drop来删除；
+另一种方式是用git stash pop，恢复的同时把stash内容也删了	
+
+	恢复储藏的工作现场
+$ git stash apply //git stash apply stash@{0}
+$ git stash drop //git stash drop stash@{0}
+	#or
+$ git stash pop //栈顶现场删除, git stash pop stash@{num}
+
+
+注意:git stash不能将未被追踪的文件(untracked file)压栈,也就是从未被git add过的文件,
+	也就是你在使用git status命令看到的提示Untracked files所列出的文件,
+	所以在git stash之前一定要用git status确认没有Untracked files
+
+$ git cherry-pick 4c805e2
+	git 会自动在当前分支做一次提交
+	在master分支上修复的bug，想要合并到当前dev分支，可以用git cherry-pick <commitId>命令，把bug提交的修改“复制”到当前分支，避免重复劳动
+
+
+
+*** 多人协作 ***
+
+查看远程库的信息
+	$ git remote -v
+	origin  git@github.com:michaelliao/learngit.git (fetch)
+	origin  git@github.com:michaelliao/learngit.git (push)
+
+//包含抓取和推送的origin的地址。如果没有推送权限，就看不到push的地址。
+
+推送分支
+	$ git push origin master 	//推送本地的master分支
+	$ git push origin dev 	//推送本地的dev分支
+
+//推送分支，就是把该分支上的所有本地提交推送到远程库。推送时，要指定本地分支，这样，Git就会把该分支推送到远程库对应的远程分支上：
+
+
+clone远程库后，默认情况下，只能看到master分支。
+
+如果远程仓库存在dev分支，而你的本地不存在dev，执行：（创建本地分支，同时关联本地分支和远程分支）
+	$ git switch -c dev origin/dev
+
+本地存在dev分支，但是还没有和远程dev分支关联的时候采用：（关联本地分支分支和远程分支）
+	$ git branch --set-upstream-to origin/dev dev
+		or
+	$ git branch -u origin/dev dev
+
+
+在本地创建和远程分支对应的分支(默认进行关联)，使用git switch -c branch-name origin/branch-name，本地和远程分支的名称最好一致
+建立本地分支和远程分支的关联，使用git branch --set-upstream-to origin/branch-name branch-name
+从远程抓取分支同步到本地，使用git pull，如果有冲突，要先处理冲突。
+
+多人协作的工作模式通常是这样：
+
+首先，可以试图用git push origin <branch-name>推送自己的修改；
+如果推送失败，则因为远程分支比你的本地更新，需要先用git pull试图合并；
+如果合并有冲突，则解决冲突，并在本地提交；
+没有冲突或者解决掉冲突后，再用git push origin <branch-name>推送就能成功！
+如果git pull提示no tracking information，则说明本地分支和远程分支的链接关系没有创建，用命令git branch --set-upstream-to origin/<branch-name> <branch-name>
+
+
+如果远程和本地的版本有冲突，两种方向
+	从远程到本地，会需要先链接本地分支和远程分支，其次会要求合并冲突文件，之后才能成功更新至本地。
+	从本地到远程，指定如果版本冲突，需要先重复从远程到本地的操作，先整合了不同版本之后再推一次。
+
+
+
+*** rebase ***
+git rebase讲解
+	https://juejin.cn/post/6969101234338791432
+	
+git push --force
+git push --force-with-lease
+
+
+
+*** 标签 ***
+
+$ git tag v1.0
+	git tag <name> 进行打标签
+
+$ git tag
+	git tag查看所有标签
+	注意，标签不是按时间顺序列出，而是按字母排序的
+	
+$ git tag v0.9 f52c633
+	将标签v0.9打在指定commit(f52c633)上
+	默认标签是打在最新提交的commit上的
+	
+$ git show v0.9
+	git show <tagname>查看标签信息
+	
+$ git tag -a v0.1 -m "version 0.1 released" 1094adb
+	创建带有说明的标签，用-a指定标签名，-m指定说明文字
+
+注意：标签总是和某个commit挂钩。如果这个commit既出现在master分支，又出现在dev分支，那么在这两个分支上都可以看到这个标签。
+
+$ git tag -d v0.1
+	删除本地标签
+	
+$ git push origin v1.0
+	推送某个标签到远程，使用命令git push origin <tagname>
+	默认创建的标签都只存储在本地，不会自动推送到远程
+	
+$ git push origin --tags
+	推送全部本地标签
+
+$ git push origin :refs/tags/v0.9
+	删除远程标签（最好先删除本地标签）
+
+
+在GitHub上，可以任意Fork开源仓库
+
+
+.gitignore，添加忽略文件
+GitHub提供的各种配置文件，可在线浏览
+	https://github.com/github/gitignore
+在线生成.gitignore文件
+	https://gitignore.itranswarp.com
+
+某个文件被忽略，查看该文件被哪句忽略：
+$ git check-ignore -v App.class
+.gitignore:3:*.class	App.class
+
+.gitignore
+	# 排除所有.开头的隐藏文件:
+	.*
+	# 排除所有.class文件:
+	*.class
+
+	# 不排除.gitignore和App.class:
+	!.gitignore
+	!App.class
+	
+把指定文件排除在.gitignore规则外的写法就是!+文件名
+
+
+
+git修改已经提交的commit信息	
+	https://www.cnblogs.com/ykpkris/p/15356969.html
+
+修改最近一次提交的信息：
+	git commit --amend
+	类似 vim 修改，修改对应commit 信息，保存退出
+
+
+修改以往n次提交的信息:
+
+	git rebase -i HEAD~n (n是以往第n次的提交记录)
+		
+	类似Vim 修改，将对应pick 改为 edit, 保存退出
+		
+	git commit --amend
+
+	修改对应commit信息，保存退出
+
+	git rebase --continue
+
+	如果不是最新版本，先pull 版本再修改，提交
+		git pull
+		按如上修改 commit信息
+		
+	最新版本可直接
+	git push --force
+
+
+
+
+
+$ git pull <远程主机名> <远程分支名>:<本地分支名>
+
+	要取回origin主机的next分支，与本地的master分支合并
+		$ git pull origin next:master
+		
+	如果远程分支(next)要与当前分支合并，则冒号后面的部分可以省略
+		$ git pull origin next
+
+	如果当前分支与远程分支存在追踪关系，git pull就可以省略远程分支名
+		$ git pull origin
+		
+	如果当前分支只有一个追踪分支，连远程主机名都可以省略。
+		$ git pull
+
+	手动建立追踪关系（tracking）
+	指定master分支追踪origin/next分支
+		$ git branch --set-upstream-to origin/next master
+		 or
+		$ git branch -u origin/next master
+
+	如果合并需要采用rebase模式，可以使用–rebase选项。
+		$ git pull --rebase <远程主机名> <远程分支名>:<本地分支名>
+
+
+$ git push <远程主机名> <本地分支名>:<远程分支名>
+
+	将本地的master分支推送到origin主机的master分支
+		$ git push origin master
+
+	如果当前分支与远程分支之间存在追踪关系，则本地分支和远程分支都可以省略。
+		$ git push origin
+		
+	如果当前分支只有一个追踪分支，那么主机名都可以省略。
+		$ git push
+
+	如果当前分支与多个主机存在追踪关系，则可以使用-u选项指定一个默认主机，这样后面就可以不加任何参数使用git push。
+	将本地的master分支推送到origin主机，同时指定origin为默认主机
+	-u：手动建立追踪关系（tracking）
+		$ git push -u origin master
+
+	不管是否存在对应的远程分支，将本地的所有分支都推送到远程主机
+		$ git push --all origin
+
+	强制推送
+		$ git push --force origin
+		
+	删除指定的远程分支
+		$ git push origin :master //推送一个空的本地分支到远程分支
+		# 等同于
+		$ git push origin --delete master
+
+
+
+
+
+
+
+
+
+实际项目中如何使用Git做分支管理
+	https://zhuanlan.zhihu.com/p/38772378
+
+对于所有分支而言， 工作区和暂存区是公共的。 
+	//https://blog.csdn.net/stpeace/article/details/84351160 
+
+
+git update-git-for-windows
+ 在windows下更新git 版本
+
+
+
+
+
+
+
+
+
+
+git log --pretty=tformat: --numstat |gawk '{ add += $1 ; subs += $2 ; loc += $1 + $2 } END { printf "added lines: %s removed lines : %s total lines: %s\n",add,subs,loc }'
+
+git reflog
+git log 8266936...2837f92 --stat
+git log 8266936...82e1d48 --pretty=tformat: --numstat |gawk '{ add += $1 ; subs += $2 ; loc += $1 + $2 } END { printf "added lines: %s removed lines : %s total lines: %s\n",add,subs,loc }'
+
+
