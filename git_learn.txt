@@ -12,12 +12,6 @@ https://github.com/geekxh/hello-algorithm/blob/master/
 
 
 
-git clone http://git-nas03.anwsoft.com:8088/YuYongjie/anw_desay_23mm_carplay.git
-git clone -b Modify_AirPlayServerSequence http://git-nas03.anwsoft.com:8088/YuYongjie/anw_desay_23mm_carplay.git
-git push http://git-nas03.anwsoft.com:8088/YuYongjie/anw_desay_23mm_carplay.git
-
-
-
 Git教程-廖雪峰
 	https://www.liaoxuefeng.com/wiki/896043488029600
 
@@ -30,6 +24,8 @@ Git官方文档
 	https://git-scm.com/book/zh/v2
 
 Quick Reference
+
+
 
 
 
@@ -51,6 +47,8 @@ $ git config --global color.ui true
 	让Git显示颜色，会让命令输出看起来更醒目
 
 
+
+
 $ git init
 	通过git init命令把这个目录变成Git可以管理的仓库
 
@@ -66,6 +64,7 @@ $ git diff readme.txt
 	git diff --cached：比较暂存区跟上一次commit后的修改。
 
 $ git diff HEAD -- readme.txt
+	同git diff HEAD file
 	用git diff HEAD -- readme.txt命令可以查看工作区和版本库里面最新版本的区别
 
 $ git log
@@ -90,36 +89,45 @@ git reset
 git reset --hard
 	移除所有暂存区的修改，并强制删除所有工作区的修改
 
+
+$ git reset HEAD readme.txt
+	同 git reset readme.txt
+	命令git reset HEAD <file>可以把暂存区的修改撤销掉（unstage），重新放回工作区
+	git reset命令既可以回退版本，也可以把暂存区的修改回退到工作区。当我们用HEAD时，表示最新的版本
+
+
 $ git reflog
 	git reflog用来记录你的每一次命令
 
 $ git revert
+	revert命令使用：
+	git revert -n commitID
+	git commit -m "comment"
+
+	举例：
 	如果已经有A -> B -> C，想回到B：
 	
 	方法一：reset到B，丢失C：
 		A -> B
-	方法二：再提交一个revert反向修改，变成B：
-		A -> B -> C -> B
-		C还在，但是两个B是重复的
+	方法二：再提交一个revert反向修改，变成B现场（相当于撤销C的修改）：
+		A -> B -> C -> B'
+		C还在，但是两个B修改的内容是重复的，commit id不同
 
 	根据需求，也许C就是瞎提交错了（比如把密码提交上去了），必须reset
 	如果C就是修改，现在又要改回来，将来可能再改成C，那你就revert
 	
-	revert命令使用：
-	git revert -n commitID
-	git commit -m "恢复第三次修改"
+	Git reset和git revert的区别
+	git reset 是回滚到对应的commit-id，相当于是删除了commit-id以后的所有的提交，并且不会产生新的commit-id记录，如果要推送到远程服务器的话，需要强制推送-f
+	git revert 是反做撤销其中的commit-id，然后重新生成一个commit-id。本身不会对其他的提交commit-id产生影响，如果要推送到远程服务器的话，就是普通的操作git push就好了	
+	
+	git 教程 --git revert 命令
+		https://zhuanlan.zhihu.com/p/356394164
+
+
+
 
 
 *** 撤销修改 ***
-
-$ git checkout -- readme.txt
-	git checkout -- file可以丢弃工作区的修改
-$ git reset HEAD readme.txt
-	命令git reset HEAD <file>可以把暂存区的修改撤销掉（unstage），重新放回工作区
-	git reset命令既可以回退版本，也可以把暂存区的修改回退到工作区。当我们用HEAD时，表示最新的版本
-$ git checkout -- readme.txt
-	//git checkout -- file命令中的--很重要，没有--，就变成了“切换到另一个分支”的命令
-
 
 git add的反向命令git checkout，撤销工作区修改，即把暂存区最新版本转移到工作区，
 git commit的反向命令git reset HEAD，就是把仓库最新版本转移到暂存区。
@@ -140,6 +148,8 @@ git commit的反向命令git reset HEAD，就是把仓库最新版本转移到�
 	此时运行 git restore test，会把工作区的 test 改为 AA。
 	git restore --source=HEAD test 会把工作区改为 A	
 
+
+
 	git restore <file> 
 	git checkout --<file>
 	效果一样 //丢弃工作区的修改
@@ -153,7 +163,9 @@ git commit的反向命令git reset HEAD，就是把仓库最新版本转移到�
 	从master恢复暂存区
 		git restore --staged readme.txt
 	从master同时恢复工作区和暂存区
+		git restore --staged --worktree readme.txt
 		git restore --source=HEAD --staged --worktree readme.txt
+
 
 
 *** 远程仓库 ***
@@ -172,7 +184,6 @@ git commit的反向命令git reset HEAD，就是把仓库最新版本转移到�
 
 Git配置多个SSH-Key
 	https://www.cnblogs.com/cosmos-wong/p/15868724.html
-	//https://gitee.com/help/articles/4229#article-header0
 
 
 本地存在一个git仓库，将本地仓库与远程仓库关联：

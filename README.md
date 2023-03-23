@@ -1,5 +1,11 @@
-#### 写在前面
-想学习提交代码的同学请fork这个仓库并且clone到本地进行修改，并且修改名为pull_request_test的文件，在里面添加自己的信息，push上来之后再pull request.
+## 廖雪峰git教程学习笔记
+
+
+
+### 概要
+
+最近学习廖雪峰老师的git教程，现整理成文档，方便以后查看
+
 
 
 #####  一、Git 和 SVN 的区别
@@ -9,10 +15,26 @@
 | **Git** | 分布式 | 本地有镜像,无网络时也可以提交到本地镜像,待到有网络时再push到服务器 |
 | **SVN** | 集中式 |   无网络不可以提交, 和 Git 的主要区别是历史版本维护的位置    |
 
+
+
 #####  二、安装 :
+
 1. [ Git 下载地址 (Linux/Unix, Mac, Windows 等相关平台)](https://git-scm.com/downloads)
 
 > 注意: 以下所有命令都在 *Git Bash* 中运行,不是 cmd, 拷贝命令的时候不用复制前面的 $ 符号
+
+```
+### linux安装git
+$ sudo apt-get install git  
+### 或者下载安装包：./config, make, sudo make install
+```
+
+#####  三、基本命令
+
+```
+$ git                           查看 git 的相关命令 (同 git --help)
+$ git --version                 查看 git 的版本
+```
 
 ```
 ### 配置所有 Git 仓库的 用户名 和 email 
@@ -39,29 +61,22 @@ $ git config --list --show-origin    查看所有的配置以及它们所在的�
 $ git config --global color.ui true    让Git显示颜色，会让命令输出看起来更醒目
 ```
 
-#####  三、相关命令
-
-```
-$ git                           查看 git 的相关命令 (git --help)
-$ git --version                 查看 git 的版本
-```
-
 ###### 1. 初始化本地仓库: 
+
 ```
 $ git init              把当前目录初始化为 git 仓库
-$ ls -ah                查看当前目录下的文件,包含隐藏文件 (不带 -ah 看不了隐藏文件)
 ```
 
 ###### 2. 添加文件到仓库
 ```
-$ git add <file>              如: git add readme.txt
+$ git add <file>              	  如: git add readme.txt
 $ git commit -m "description"     如: git commit -m "add readme.txt"
 
 # 添加文件到仓库分两步:
 # 1. add 添加该文件到仓库, 
 # 添加许多同种类型的文件,可以使用通配符 * (记得加引号)  如: git add "*.txt"  命令就是添加所有 .txt 文件
 # 2. commit 提交该文件到仓库, description 为你对该次提交的描述说明, 
-注意: 1）可以多次 add 不同的文件,commit 可以一次提交多个文件；
+注意: 1）可以多次 add 不同的文件, commit 可以一次提交多个文件，多个文件用空格隔开；
 	 2）git commit 没有-m 及描述，会进入vim
 ```
 
@@ -75,7 +90,7 @@ $ git status
 # git diff    查看工作区(work dict)和暂存区(stage)的区别
 # git diff HEAD   查看工作区(work dict)和上一次commit后的区别
 # git diff --cached    查看暂存区(stage)和上一次commit后的区别
-# git diff HEAD -- <file>    查看工作区和版本库里面最新版本的区别
+# git diff HEAD -- <file>    同 git diff HEAD <file>
 如: git diff readme.txt    表示查看 readme.txt 修改了什么,有什么不同
 ```
 
@@ -108,7 +123,14 @@ $ git reset --hard <commit_id>
 # git reset --hard    移除所有暂存区的修改，并强制删除所有工作区的修改
 ```
 
+
+
+git revert
+
+
+
 ###### 7. 查看命令历史 (用于版本切换)
+
 ```
 $ git reflog
 # 假如我们依次提交了三个版本 a->b->c,然后昨天我们从版本 c 回退到了版本 b,今天我们又想要回到版本 c,此时就可以使用 reflog 命令来查找 c 版本的 commit_id,然后使用 reset 命令来进行版本回退
