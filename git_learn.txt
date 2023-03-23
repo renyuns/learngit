@@ -126,7 +126,6 @@ $ git revert
 
 
 
-
 *** 撤销修改 ***
 
 git add的反向命令git checkout，撤销工作区修改，即把暂存区最新版本转移到工作区，
