@@ -65,7 +65,6 @@ $ git diff readme.txt
 
 $ git diff HEAD -- readme.txt
 	同git diff HEAD file
-	用git diff HEAD -- readme.txt命令可以查看工作区和版本库里面最新版本的区别
 
 $ git log
 $ git log --pretty=oneline
@@ -92,8 +91,6 @@ git reset --hard
 
 $ git reset HEAD readme.txt
 	同 git reset readme.txt
-	命令git reset HEAD <file>可以把暂存区的修改撤销掉（unstage），重新放回工作区
-	git reset命令既可以回退版本，也可以把暂存区的修改回退到工作区。当我们用HEAD时，表示最新的版本
 
 
 $ git reflog
@@ -128,42 +125,39 @@ $ git revert
 
 *** 撤销修改 ***
 
-git add的反向命令git checkout，撤销工作区修改，即把暂存区最新版本转移到工作区，
-git commit的反向命令git reset HEAD，就是把仓库最新版本转移到暂存区。
 
-
-最新版的git提示都已经更换成了restore
-	原来的git checkout 可以使用 git restore 代替
-	原来的git reset HEAD 可以使用 git restore --staged 代替
-	原来的git checkout branchName 可以用 git switch branchName 代替。
+						git add                 
+						or git rm                 git commit
+	工作区 ----------------> 暂存区 ----------------> HEAD
 	
-	情况1：在工作区做了修改，并未添加到暂存区，想撤销工作区的修改，用 git restore file;
-	情况2：在工作区做了修改，并用git add 添加到了暂存区，未提交；想撤销，分两步，1.先撤销暂存区的修改，用 git restore --staged file, 2.然后参考情况1撤销工作区的修改；
-	情况3：在工作区做了修改，且git add git commit添加并提交了内容，想撤销本次提交，直接用 git reset --hard HEAD^回退版本，即可保证工作区，暂存区，版本库都是上次的内容
-
-	使用restore，在未给定 source 的情况下，如果使用 `--staged` ，从 `HEAD` 恢复暂存区，否则从暂存区恢复工作区。
-	举例：
-	比如文件 test 内容为 A，已提交到历史库，工作区将 test 改为 AA，然后 add 到暂存区，工作区再将 test 改为 AAA。
-	此时运行 git restore test，会把工作区的 test 改为 AA。
-	git restore --source=HEAD test 会把工作区改为 A	
-
+					 git restore    						git restore --staged																			
+					 git restore --worktree     git reset
+	工作区 <---------------- 暂存区 <---------------- HEAD	
+	 
+	 								git reset --hard HEAD
+	工作区					git restore --staged --worktree
+	暂存区 <----------------------------------------- HEAD
+									
 
 
-	git restore <file> 
-	git checkout --<file>
-	效果一样 //丢弃工作区的修改
-
-	git restore --staged <file>
-	git reset HEAD <file>
-	效果一样 //丢弃暂存区的修改
-
-	从暂存区恢复工作区，
+	从暂存区恢复工作区（丢弃工作区的修改）
+		git restore readme.txt		
 		git resotre --worktree readme.txt
-	从master恢复暂存区
+		git checkout -- readme.txt （discarded）
+	从HEAD恢复暂存区（丢弃暂存区的修改）
 		git restore --staged readme.txt
-	从master同时恢复工作区和暂存区
+		git reset HEAD <file> / git reset <file>
+	从HEAD同时恢复工作区和暂存区
 		git restore --staged --worktree readme.txt
 		git restore --source=HEAD --staged --worktree readme.txt
+		git reset --hard HEAD readme.txt
+
+	举例：
+	比如文件 test 内容为 A，已提交到历史库，工作区将 test 改为 AA，然后 add 到暂存区，工作区再将 test 改为 AAA。
+	运行 git restore test，会把工作区的 test 改为 AA。
+	运行 git restore --staged test，会把暂存区的 test 改为 A。
+	运行 git restore --source=HEAD test 会把工作区改为 A	（从HEAD恢复工作区，git status 会提示工作区和暂存区有更新，不建议使用该 command）
+	运行 git restore --staged --worktree test, 会把暂存区和工作区的test改为A
 
 
 
@@ -191,7 +185,7 @@ $ git remote add origin git@github.com:michaelliao/learngit.git
 	远程库的名字就是origin，这是Git默认的叫法，也可以改成别的。
 	远程库全名叫git@github.com:michaelliao/learngit.git
 	
-		你的本地git库是learngit，有3台远程服务器，都有同样的learngit，现在你的本地关联了3个远程服务器，怎么区分他们呢？
+		本地可以关联多个远程库。如本地git库是learngit，关联3个远程服务器：
 		git remote add server-1 git@1.2.3.4:/user/learngit.git
 		git remote add server-2 git@2.3.4.5:/user/learngit.git
 		git remote add server-2 git@3.4.5.6:/user/learngit.git
@@ -231,9 +225,11 @@ master指向master分支提交点
 	git branch命令会列出所有分支，当前分支前面会标一个*号
 
 创建分支：git branch <name>
-切换分支：git checkout <name>或者git switch <name>
+切换分支：git switch <name> 
+					或者 git checkout <name>
 
-创建+切换分支：git checkout -b <name>或者git switch -c <name>
+创建+切换分支：git switch -c <name> 
+							或者 git checkout -b <name>
 
 合并某分支到当前分支：git merge <name>
 	合并操作（ merge ）只对当前所在分支产生影响
@@ -258,7 +254,7 @@ $ git log --graph
 
 领先分支合并到落后分支，会改变落后分支(常用)
 落后分支合并到领先分支，会提示"Already up to data."
-两分支分出后，若均有提交（即都有领先），合并时可能出现冲突，不冲突时可能顺利合并
+两分支分出后，若均有提交（即都有领先），合并时可能出现冲突，不冲突时可顺利合并
 
 当Git无法自动合并分支时，就必须首先解决冲突。解决冲突后，再提交，合并完成。
 解决冲突就是把Git合并失败的文件手动编辑为我们希望的内容，再提交。
@@ -294,6 +290,7 @@ $ git log --graph --pretty=oneline --abbrev-commit
 
 
 
+
 *** Bug分支 ***
 
 $ git stash
@@ -303,7 +300,7 @@ $ git stash save "stash_test" //添加备注信息
 	用git status查看工作区，就是干净的
 	
 	为什么要用git stash
-		//https://blog.csdn.net/ForMyQianDuan/article/details/78750434
+		https://blog.csdn.net/ForMyQianDuan/article/details/78750434
 		
 		要在stash中包含未跟踪的文件
 		git stash --include-untracked
@@ -426,7 +423,11 @@ $ git push origin :refs/tags/v0.9
 	删除远程标签（最好先删除本地标签）
 
 
+
+
+
 在GitHub上，可以任意Fork开源仓库
+
 
 
 .gitignore，添加忽略文件
