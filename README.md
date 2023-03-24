@@ -154,40 +154,47 @@ $ git reset --hard <commit_id>
 git revert
 
 ```
-$ git revert
-	revert命令使用：
-	git revert -n commitID
-	git commit -m "comment"
+$ git revert -n commit-id
+#    反做commit-id对应的内容，然后重新commit一个信息，不会影响其他的commit内容
+# 	 使用-n是应用revert后，需要重新提交一个commit信息，然后再推送。如果不使用-n，指令后会弹出编辑器用于编辑提交信息
 
-	举例：
-	如果已经有A -> B -> C，想回到B：
-	
-	方法一：reset到B，丢失C：
-		A -> B
-	方法二：再提交一个revert反向修改，变成B现场（相当于撤销C的修改）：
-		A -> B -> C -> B'
-		C还在，但是两个B修改的内容是重复的，commit id不同
+$ git revert -n commit-idA..commit-idB
+# 	 反做commit-idA到commit-idB之间的所有commit
 
-	根据需求，也许C就是瞎提交错了（比如把密码提交上去了），必须reset
-	如果C就是修改，现在又要改回来，将来可能再改成C，那你就revert
-	
-	Git reset和git revert的区别
-	git reset 是回滚到对应的commit-id，相当于是删除了commit-id以后的所有的提交，并且不会产生新的commit-id记录，如果要推送到远程服务器的话，需要强制推送-f
-	git revert 是反做撤销其中的commit-id，然后重新生成一个commit-id。本身不会对其他的提交commit-id产生影响，如果要推送到远程服务器的话，就是普通的操作git push就好了	
-	
-	git 教程 --git revert 命令
-		https://zhuanlan.zhihu.com/p/356394164
+$ git revert --abort
+#    合并冲突后退出：当前的操作会回到指令执行之前的样子，相当于啥也没有干，回到原始的状态
+
+$ git revert --quit
+#    合并后退出，但是保留变化：该指令会保留指令执行后的车祸现场
+
+$ git add .
+$ git commit -m "提交的信息"
+#    合并后解决冲突，继续操作：如果遇到冲突可以修改冲突，然后重新提交相关信息
+
+
+### Git reset和git revert的区别
+# git reset 是回滚到对应的commit-id，相当于是删除了commit-id以后的所有的提交，并且不会产生新的commit-id记录，如果要推送到远程服务器的话，需要强制推送-f
+# git revert 是反做撤销其中的commit-id，然后重新生成一个commit-id。本身不会对其他的提交commit-id产生影响，如果要推送到远程服务器的话，就是普通的操作git push就好了	
+
+# 举例：
+# 如果已经有A -> B -> C，想回到B：
+
+# 方法一：reset到B，丢失C：
+# 	A -> B
+# 方法二：再提交一个revert反向修改，变成B现场（相当于撤销C的修改）：
+# 	A -> B -> C -> B'
+# 	C还在，但是两个B的内容相同，commit id不同
+
+# 根据需求，也许C就是瞎提交错了（比如把密码提交上去了），必须reset
+# 如果C就是修改，现在又要改回来，将来可能再改成C，那你就revert
+
+# git 教程 --git revert 命令：
+# 	https://zhuanlan.zhihu.com/p/356394164
 ```
 
 
 
-
-
-
-
-
-
-###### 7. 查看命令历史 (用于版本切换)
+###### 7. 查看命令历史 
 
 ```
 $ git reflog
@@ -199,39 +206,39 @@ $ git reflog
 ###### 8. 撤销修改
 
 ```
-						git add                 
-						or git rm                 git commit
-	工作区 ----------------> 暂存区 ----------------> HEAD
+### 从暂存区恢复工作区（丢弃工作区的修改）
+$ git restore readme.txt		
+$ git resotre --worktree readme.txt
+$ git checkout -- readme.txt （discarded）
+
+###  从HEAD恢复暂存区（丢弃暂存区的修改）
+$ git restore --staged readme.txt
+$ git reset HEAD <file> / git reset <file>
+
+###  从HEAD同时恢复工作区和暂存区
+$ git restore --staged --worktree readme.txt
+$ git restore --source=HEAD --staged --worktree readme.txt
+$ git reset --hard HEAD readme.txt
+
+
+			   git add / git rm                       git commit
+	工作区 ----------------------------> 暂存区 ----------------------------> HEAD
 	
-					 git restore    						git restore --staged																			
-					 git restore --worktree     git reset
-	工作区 <---------------- 暂存区 <---------------- HEAD	
+			    git restore --worktree   		   git restore --staged								
+		      or git restore                      or git reset
+	工作区 <---------------------------- 暂存区 <---------------------------- HEAD	
 	 
-	 								git reset --hard HEAD
-	工作区					git restore --staged --worktree
-	暂存区 <----------------------------------------- HEAD
-									
+	 				     git reset --hard HEAD
+	工作区				or git restore --staged --worktree
+	暂存区 <----------------------------------------------------------------- HEAD
 
 
-	从暂存区恢复工作区（丢弃工作区的修改）
-		git restore readme.txt		
-		git resotre --worktree readme.txt
-		git checkout -- readme.txt （discarded）
-	从HEAD恢复暂存区（丢弃暂存区的修改）
-		git restore --staged readme.txt
-		git reset HEAD <file> / git reset <file>
-	从HEAD同时恢复工作区和暂存区
-		git restore --staged --worktree readme.txt
-		git restore --source=HEAD --staged --worktree readme.txt
-		git reset --hard HEAD readme.txt
-
-	举例：
-	比如文件 test 内容为 A，已提交到历史库，工作区将 test 改为 AA，然后 add 到暂存区，工作区再将 test 改为 AAA。
-	运行 git restore test，会把工作区的 test 改为 AA。
-	运行 git restore --staged test，会把暂存区的 test 改为 A。
-	运行 git restore --source=HEAD test 会把工作区改为 A	（从HEAD恢复工作区，git status 会提示工作区和暂存区有更新，不建议使用该 command）
-	运行 git restore --staged --worktree test, 会把暂存区和工作区的test改为A
-
+# 举例测试：
+#	比如文件 test 内容为 A，已提交到历史库，工作区将 test 改为 AA，然后 add 到暂存区，工作区再将 test 改为 AAA。
+#	运行 git restore test，会把工作区的 test 改为 AA。
+#	运行 git restore --staged test，会把暂存区的 test 改为 A。
+#	运行 git restore --source=HEAD test 会把工作区改为 A	（从HEAD恢复工作区，git status 会提示工作区和暂存区都有更新，不建议使用该 command）
+#	运行 git restore --staged --worktree test, 会把暂存区和工作区的test改为A
 ```
 
 
@@ -245,7 +252,10 @@ $ git rm <file>
 - git add <file>
 ```
 
+
+
 ###### 其他命令
+
 ```
 $ cat <file>    显示文件内容,如: cat readme.txt 就是在 git bash 中显示该文件内容
 $ cd ~         进入用户主目录
@@ -264,55 +274,78 @@ $ open ~/.ssh  Mac 打开存放 ssh 文件夹
 ###### 1. [创建 SSH Key](https://docs.github.com/en/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#generating-a-new-ssh-key)
 ```
 $ ssh-keygen -t rsa -C "youremail@example.com"
-# 邮件地址换成你自己的邮件地址，然后一路回车，使用默认值即可，由于这个Key也不是用于军事目的，所以也无需设置密码。
-```
+# 填写自己的邮件地址，然后一路回车，使用默认值即可，由于这个Key也不是用于军事目的，所以也无需设置密码。
 
-> 在用户主目录下，看看有没有.ssh目录，如果有，再看看这个目录下有没有id_rsa和id_rsa.pub这两个文件，如果已经有了，可直接跳到下一步。如果没有，打开Shell（Windows下打开Git Bash），创建SSH Key
+# 多账号时，需要创建多个SSH Key：
+$ ssh-keygen -t rsa -C 'xxxxx@company.com' -f ~/.ssh/gitee_id_rsa
+Or
+$ ssh-keygen -t rsa -C 'qd_zhangx@126.com'
+Generating public/private rsa key pair.
+Enter file in which to save the key (C:\Users\12475/.ssh/id_rsa): C:\Users\12475/.ssh/id_rsa_gitlab
+```
 
 > 如果一切顺利的话，可以在用户主目录里找到.ssh目录，里面有 id_rsa 和 id_rsa.pub 两个文件，这两个就是 SSH Key 的秘钥对，id_rsa 是私钥，不能泄露出去，id_rsa.pub 是公钥，可以放心地告诉任何人。
 
-###### 2. 登录 GitHub ,在 Settings 中找到 SSH 设置项中添加新的 SSH Key,设置任意 title,在 Key 文本框里粘贴 id_rsa.pub 文件的内容
+###### 2. 登录 GitHub ，在 Settings 中找到 SSH 设置项，添加新的 SSH Key，设置任意 title，在 Key 文本框里粘贴 id_rsa.pub 文件的内容
 ```
 # 复制Key用这种方式复制
 $ cd ~/.ssh
 $ cat id_rsa.pub
 
 $ open ~/.ssh   (Mac 下打开存放 Github 生成的 ssh Key 文件夹)
-
 $ pbcopy < ~/.ssh/id_rsa.pub  Mac 下拷贝生成的公钥内容
 ```
 
-###### 3. 关联远程仓库 (先有本地仓库)
+
+
+clone 远程库
+
 ```
-$ git remote add origin git@github.com:renyuns/learngit.git
-# 后面的地址换成自己的 GitHub 仓库地址
+$ git clone git@github.com:michaelliao/gitskills.git
+# 本地没有仓库，从远程下载仓库，并关联
+
+#$ git clone -b <branch name> git@github.com:michaelliao/gitskills.git
+# 克隆远程的一个分支到本地
+```
+
+
+
+###### 3. 关联远程仓库 
+
+```
+$ git remote add origin git@github.com:michaelliao/learngit.git
+# 本地库关联一个远程库
+# 远程库的名字是origin，这是Git默认的叫法，也可以改成别的。
+# 远程库全名叫git@github.com:michaelliao/learngit.git（注意改成自己的）
+	
+
+### 本地关联多个远程库。如本地git库是learngit，关联3个远程服务器：
+$ git remote add github git@1.2.3.4:/user/learngit.git
+$ git remote add gitlab git@2.3.4.5:/user/learngit.git
+$ git remote add gitee git@3.4.5.6:/user/learngit.git
+# 远程库分别起名github, gitlab, gitee，一般来说，我们只关联一个远程库，就叫origin	
+$ git push github master
+$ git push gitee master
 ```
 
 ###### 4. 推送到远程仓库
 ```
 $ git remote       查看远程库信息
 $ git remote -v    查看远程库详细信息
-$ git remote rm origin  删除已关联的远程库 origin
-$ git push -u origin master    #第一次推送
+$ git remote rm origin  解除了本地库和远程库origin的绑定关系，并不是物理上删除了远程库
+$ git push -u origin master    第一次推送，使用-u参数，关联本地的master分支和远程的master分支
 $ git push origin master      推送本地 master 分支到远程库
-$ git push origin dev         推送本地 dev 分支到远程库
-#  除了第一次推送,不需要添加 -u 参数
-
-# 一个本地库关联多个远程库,例如同时关联 GitHub 和 Gitee:
-# 1. 先关联GitHub的远程库：(注意:远程库的名称叫 github，不叫 origin)
-$ git remote add github git@github.com:renyun/learngit1.git
-# 2. 再关联Gitee的远程库：(注意:远程库的名称叫 gitee，不叫 origin)
-$ git remote add gitee git@gitee.com:renyun/learngit1.git
-# 3. 推送到远程库
-$ git push github master
-$ git push gitee master
 ```
 > 加上了-u参数，Git 不但会把本地的 master 分支内容推送的远程新的 master 分支，还会把本地的 master 分支和远程的master分支关联起来
 
-###### 5. 从远程仓库克隆 (先有远程库)
+###### 5. 从远程仓库克隆 
 ```
-$ git clone git@github.com:renyuns/gitskills.git
+$ git clone git@github.com:michaelliao/gitskills.git
+# 本地没有仓库，从远程下载，并关联
 # GitHub 支持多种协议,上面是 ssh 协议,还有 https 协议
+
+#$ git clone -b <branch name> git@github.com:michaelliao/gitskills.git
+# 克隆远程的一个分支到本地
 ```
 
 #####  六、分支
@@ -373,10 +406,36 @@ $ git push origin :refs/tags/v0.9
 1. [Git 官网](https://git-scm.com/)
 2. [GitHub-开源协作社区](https://github.com/)
 3. [Gitee(码云)-国内开源协作社区](https://gitee.com/)
-4. [廖雪峰的 Git 教程-新手必看](https://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000)
-5. [15 分钟学会 Git](https://try.github.io/levels/1/challenges/1)
-6. [Git Book](https://git-scm.com/book/zh/v2)
-7. [.gitignore 文件常用配置](https://github.com/github/gitignore)
+4. [15 分钟学会 Git](https://try.github.io/levels/1/challenges/1)
+5. [Git Book](https://git-scm.com/book/zh/v2)
+
+
+
+[Git教程-廖雪峰](https://www.liaoxuefeng.com/wiki/896043488029600)
+
+[Git教程-易百教程](https://www.yiibai.com/git)
+
+[Git官方文档](https://git-scm.com/book/zh/v2)
+
+[git修改已经提交的commit信息](https://www.cnblogs.com/ykpkris/p/15356969.html)
+
+[git 教程 --git revert 命令](https://zhuanlan.zhihu.com/p/356394164)
+
+[为什么要用git stash](https://blog.csdn.net/ForMyQianDuan/article/details/78750434)
+
+[git rebase讲解](https://juejin.cn/post/6969101234338791432)
+
+[GitHub提供的.gitignore配置文件](https://github.com/github/gitignore)
+
+[实际项目中如何使用Git做分支管理](https://zhuanlan.zhihu.com/p/38772378)
+
+[对于所有分支而言， 工作区和暂存区是公共的](https://blog.csdn.net/stpeace/article/details/84351160)
+
+
+
+
+
+
 
 
 ##### 九、参与开源项目

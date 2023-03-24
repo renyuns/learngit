@@ -1,6 +1,4 @@
 
-2023/3/24/14:56 ZhangXu
-
 大厂高频算法题
 地址：https://github.com/afatcoder/LeetcodeTop
 02. 算法可视化
@@ -98,6 +96,7 @@ $ git reset HEAD readme.txt
 $ git reflog
 	git reflog用来记录你的每一次命令
 
+
 $ git revert
 	revert命令使用：
 	git revert -n commitID
@@ -115,13 +114,30 @@ $ git revert
 	根据需求，也许C就是瞎提交错了（比如把密码提交上去了），必须reset
 	如果C就是修改，现在又要改回来，将来可能再改成C，那你就revert
 	
-	Git reset和git revert的区别
-	git reset 是回滚到对应的commit-id，相当于是删除了commit-id以后的所有的提交，并且不会产生新的commit-id记录，如果要推送到远程服务器的话，需要强制推送-f
-	git revert 是反做撤销其中的commit-id，然后重新生成一个commit-id。本身不会对其他的提交commit-id产生影响，如果要推送到远程服务器的话，就是普通的操作git push就好了	
-	
+
+git revert -n commit-id
+	只会反做commit-id对应的内容，然后重新commit一个信息，不会影响其他的commit内容
+	使用-n是应为revert后，需要重新提交一个commit信息，然后在推送。如果不使用-n，指令后会弹出编辑器用于编辑提交信息
+
+git revert -n commit-idA..commit-idB
+	反做commit-idA到commit-idB之间的所有commit
+
+git revert --abort
+	合并冲突后退出：当前的操作会回到指令执行之前的样子，相当于啥也没有干，回到原始的状态
+
+git revert --quit
+	合并后退出，但是保留变化：该指令会保留指令执行后的车祸现场
+
+git add .
+git commit -m "提交的信息"
+	合并后解决冲突，继续操作：如果遇到冲突可以修改冲突，然后重新提交相关信息
+
+Git reset和git revert的区别
+git reset 是回滚到对应的commit-id，相当于是删除了commit-id以后的所有的提交，并且不会产生新的commit-id记录，如果要推送到远程服务器的话，需要强制推送-f
+git revert 是反做撤销其中的commit-id，然后重新生成一个commit-id。本身不会对其他的提交commit-id产生影响，如果要推送到远程服务器的话，就是普通的操作git push就好了	
+
 	git 教程 --git revert 命令
 		https://zhuanlan.zhihu.com/p/356394164
-
 
 
 
@@ -142,17 +158,17 @@ $ git revert
 									
 
 
-	从暂存区恢复工作区（丢弃工作区的修改）
-		git restore readme.txt		
-		git resotre --worktree readme.txt
-		git checkout -- readme.txt （discarded）
-	从HEAD恢复暂存区（丢弃暂存区的修改）
-		git restore --staged readme.txt
-		git reset HEAD <file> / git reset <file>
-	从HEAD同时恢复工作区和暂存区
-		git restore --staged --worktree readme.txt
-		git restore --source=HEAD --staged --worktree readme.txt
-		git reset --hard HEAD readme.txt
+从暂存区恢复工作区（丢弃工作区的修改）
+	git restore readme.txt		
+	git resotre --worktree readme.txt
+	git checkout -- readme.txt （discarded）
+从HEAD恢复暂存区（丢弃暂存区的修改）
+	git restore --staged readme.txt
+	git reset HEAD <file> / git reset <file>
+从HEAD同时恢复工作区和暂存区
+	git restore --staged --worktree readme.txt
+	git restore --source=HEAD --staged --worktree readme.txt
+	git reset --hard HEAD readme.txt
 
 	举例：
 	比如文件 test 内容为 A，已提交到历史库，工作区将 test 改为 AA，然后 add 到暂存区，工作区再将 test 改为 AAA。
@@ -550,7 +566,7 @@ $ git push <远程主机名> <本地分支名>:<远程分支名>
 	https://zhuanlan.zhihu.com/p/38772378
 
 对于所有分支而言， 工作区和暂存区是公共的。 
-	//https://blog.csdn.net/stpeace/article/details/84351160 
+	https://blog.csdn.net/stpeace/article/details/84351160 
 
 
 git update-git-for-windows
