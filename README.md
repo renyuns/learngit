@@ -258,14 +258,14 @@ $ git rm <file>
 #### 10.分支
 
 ```
-# HEAD指向当前分支
+# HEAD 指向当前分支
 # master 指向 master 分支提交点
 
-$ git branch       查看分支列表及当前分支（当前分支有一个*号）
+$ git branch       查看分支列表及当前分支（当前分支前有一个*号）
 
 $ git branch dev   创建 dev 分支
 $ git switch dev   切换到 dev 分支  (git checkout dev)
-$ git switch -c dev   创建并切换到新的 dev 分支  (git checkout -b dev)
+$ git switch -c dev   创建并切换到 dev 分支  (git checkout -b dev)
 $ git switch -c dev origin/dev  创建远程 origin 的 dev 分支到本地并切换到该分支
 
 $ git branch -d dev   删除本地 dev 分支
@@ -273,17 +273,82 @@ $ git branch -D dev   强制删除本地 dev 分支
 
 $ git merge dev       合并 dev 分支到当前分支 (当有冲突的时候,需要先解决冲突)
 $ git merge --no-ff -m "merge with no-ff" dev  合并 dev 分支到当前分支(禁用Fast forward 合并策略)
-
+# 合并分支时，Git默认会用Fast forward模式，这种模式删除分支后，会丢掉分支信息，无法看出曾做过合并
+# 加上--no-ff参数会禁用Fast forward模式，Git在merge时生成一个新的commit，合并后的历史有分支，从分支历史上可以看出分支信息
 
 $ git cherry-pick <commit> 复制一个特定的提交到当前分支(当前分支的内容需要先 commit,然后冲突的文件需要解决冲突,然后 commit)
-
-
-# 为本次合并要创建一个新的commit，所以加上-m参数，把commit描述写进去
-# 合并分支时，加上--no-ff参数就可以用普通模式合并，合并后的历史有分支，能看出来曾经做过合并，而 fast forward 合并就看不出来曾经做过合并
 
 $ git log --graph  查看分支合并图
 $ git log --graph --pretty=oneline --abbrev-commit
 ```
+
+> 合并分支，只会对当前分支进行更新。如当前为 master 分支，git merge dev，只对 master 分支上的内容进行更新，dev 分支的内容不会改变。
+>
+> 因为工作区和暂存区是所有分支共享，这意味着不同分支间会影响。所以在切换分支前，保证当前工作区和暂存区修改都已提交。或将未提交的内容 stash
+>
+> [实际项目中如何使用Git做分支管理](https://zhuanlan.zhihu.com/p/38772378)
+>
+> [对于所有分支而言， 工作区和暂存区是公共的](https://blog.csdn.net/stpeace/article/details/84351160)
+>
+> [git 的 merge 与 no-ff merge 测试](https://app.yinxiang.com/fx/5cb80672-82b7-4527-a790-6e216b8267d5)
+
+
+
+分支合并图示：
+
+当前分支如下：
+
+![image-20230327173318911](C:\Users\12475\AppData\Roaming\Typora\typora-user-images\image-20230327173318911.png)
+
+
+
+使用Fast forward 合并后，如下：
+
+![1679908335549](C:\Users\12475\Desktop\1679908335549.png)
+
+
+
+使用 --no-ff (不使用fast forward) 合并后如下（master 多了一个commit 提交）：
+
+![1679908110753](C:\Users\12475\Desktop\1679908110753.png)
+
+
+
+如果两个分支分开后，都有提交，此时合并可能存在冲突，需要首先解决冲突再合并。
+
+![image-20230327173430680](C:\Users\12475\AppData\Roaming\Typora\typora-user-images\image-20230327173430680.png)
+
+
+
+解决冲突，并合并：
+
+![image-20230327173450358](C:\Users\12475\AppData\Roaming\Typora\typora-user-images\image-20230327173450358.png)
+
+
+
+解决冲突后，master 还可以再合并到（更新）dev 分支。
+
+![image-20230327173513442](C:\Users\12475\AppData\Roaming\Typora\typora-user-images\image-20230327173513442.png)
+
+
+
+分支合并小结：
+
+领先分支合并到落后分支，会改变落后分支(常用)
+落后分支合并到领先分支，会提示"Already up to data."
+两分支分出后，若均有提交（即都有领先），合并时可能出现冲突，如果不冲突也能够合并
+
+当Git无法自动合并分支时，就必须首先解决冲突。解决冲突后，再提交，合并完成。
+解决冲突就是把Git合并失败的文件手动编辑为我们希望的内容，再提交。
+
+	git merge
+		//出现冲突
+	修改冲突文件
+	git add .
+	git commit -m "note"
+	git branch -d <name>
+
+
 
 
 
@@ -315,18 +380,26 @@ $ git push origin :refs/tags/v0.9
 
 
 
+#### git rebase
+
+[git rebase讲解](https://juejin.cn/post/6969101234338791432)
+
+git push --force
+git push --force-with-lease
+
+
+
 #### 修改已经提交的commit 信息
 
 ```
-
 修改最近一次提交的信息：
-	git commit --amend
+	$ git commit --amend
 	类似 vim 修改，修改对应commit 信息，保存退出
 
 
 修改以往n次提交的信息:
 
-	git rebase -i HEAD~n (n是以往第n次的提交记录)
+	$ git rebase -i HEAD~n (n是以往第n次的提交记录)
 		
 	类似Vim 修改，将对应pick 改为 edit, 保存退出
 		
@@ -336,12 +409,12 @@ $ git push origin :refs/tags/v0.9
 
 	git rebase --continue
 
-	如果不是最新版本，先pull 版本再修改，提交
-		git pull
-		按如上修改 commit信息
+
+如果不是最新版本，先pull 版本再修改，提交
+	git pull
+	按如上修改 commit信息
 		
-	最新版本可直接
-	git push --force
+最新版本可直接	git push --force
 ```
 
 
@@ -349,30 +422,27 @@ $ git push origin :refs/tags/v0.9
 #### .gitignore 设置忽略文件
 
 ```
-.gitignore，添加忽略文件
-GitHub提供的各种配置文件，可在线浏览
-	https://github.com/github/gitignore
-在线生成.gitignore文件
-	https://gitignore.itranswarp.com
+# .gitignore，文件用于设置git更新时忽略的文件
 
-某个文件被忽略，查看该文件被哪句忽略：
+# 某个文件被忽略，查看该文件被哪句忽略：
 $ git check-ignore -v App.class
-.gitignore:3:*.class	App.class
+ .gitignore:3:*.class	App.class
 
-.gitignore
-	# 排除所有.开头的隐藏文件:
+.gitignore 中
+# 排除所有.开头的隐藏文件: 
 	.*
-	# 排除所有.class文件:
+# 排除所有.class文件:	
 	*.class
-
-	# 不排除.gitignore和App.class:
+# 不排除 .gitignore 和 App.class:
 	!.gitignore
 	!App.class
 	
-把指定文件排除在.gitignore规则外的写法就是!+文件名
+### 把指定文件排除在.gitignore规则外的写法就是!+文件名
 ```
 
-
+> [GitHub提供的各种配置文件](https://github.com/github/gitignore)
+>
+> [在线生成.gitignore文件](https://gitignore.itranswarp.com)
 
 
 
@@ -444,6 +514,26 @@ $ git remote add origin git@github.com:michaelliao/learngit.git
 $ git remote add github git@1.2.3.4:/user/learngit.git
 $ git remote add gitlab git@2.3.4.5:/user/learngit.git
 $ git remote add gitee git@3.4.5.6:/user/learngit.git
+
+### clone远程库后，默认情况下，只能看到master分支。
+
+### 在本地创建和远程分支对应的分支(默认进行关联)
+$ git switch -c branch-name origin/branch-name  本地和远程分支的名称最好一致
+### 建立本地分支和远程分支的关联
+$ git branch --set-upstream-to origin/branch-name branch-name
+
+
+# 多人协作的工作模式:
+# 首先，用git push origin <branch-name> 推送本地的修改；
+# 如果推送失败，则因为远程分支比本地的更新，需要先用git pull试图合并；
+# 如果合并有冲突，则解决冲突，并在本地提交；
+# 没有冲突或者解决掉冲突后，再用git push origin <branch-name>推送就能成功！
+
+# 当git pull提示no tracking information，则说明本地分支和远程分支的链接关系没有创建，用命令git branch --set-upstream-to origin/<branch-name> <branch-name>
+
+# 如果远程和本地的版本有冲突，两种方向
+# 	从远程到本地，会需要先链接本地分支和远程分支，其次会要求合并冲突文件，之后才能成功更新至本地。
+# 	从本地到远程，指定如果版本冲突，需要先重复从远程到本地的操作，先整合了不同版本之后再推一次。
 ```
 
 
@@ -536,10 +626,8 @@ $ git pull --rebase <远程主机名> <远程分支名>:<本地分支名>
 
 ###  六、stash
 ```
-$ git pull  拉取远程分支最新的内容
-$ git branch --set-upstream-to=origin/dev dev  指定本地 dev 分支与远程 origin/dev 分支的链接
-
-$ git stash  保存当前工作区和暂存区的修改状态,切换到其他分支修复 bug 等工作,然后在回来继续工作
+$ git stash  保存当前工作区和暂存区的修改状态，git status 查看是干净的
+$ git stash save "comment"  保存现场，并添加备注信息
 $ git stash list  查看保存现场的列表
 $ git stash pop   恢复的同时把 stash 内容也删除
 $ git stash apply  恢复现场，stash内容并不删除
@@ -547,14 +635,31 @@ $ git stash drop   删除 stash 内容
 $ git stash apply stash@{0}  多次stash，恢复的时候，先用git stash list查看，然后恢复指定的stash
 
 
+$ git stash list
+ stash@{index}: WIP on [分支名]: [最近一次的commitID] [最近一次的提交信息]
+
+
+# 注意: git stash不能将未被追踪的文件(untracked file)压栈,也就是从未被git add过的文件, 所以在git stash之前一定要用git status确认没有Untracked files
+
+
+### 在stash中包含未跟踪的文件
+$ git stash --include-untracked
+ or
+$ git stash -u
+
+$ git stash -a //其中-a代表所有（追踪的&未追踪的）
+
 # 通常在 dev 分支开发时,需要有紧急 bug 需要马上处理,保存现在修改的文件等,先修复 bug 后再回来继续工作的情况
 
 
-
-$ git rebase  把本地未push的分叉提交历史整理成直线(使得我们在查看历史提交的变化时更容易，因为分叉的提交需要三方对比)
 ```
 
+> [为什么要用git stash](https://blog.csdn.net/ForMyQianDuan/article/details/78750434)
+
+
+
 ###  七、标签
+
 ```
 $ git tag  查看所有的标签（注意不是按时间顺序列出，而是按字母顺序排序）
 $ git show <tagname>  查看标签信息
