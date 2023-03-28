@@ -361,15 +361,6 @@ $ git cherry-pick 4c805e2
 	origin  git@github.com:michaelliao/learngit.git (fetch)
 	origin  git@github.com:michaelliao/learngit.git (push)
 
-//包含抓取和推送的origin的地址。如果没有推送权限，就看不到push的地址。
-
-推送分支
-	$ git push origin master 	//推送本地的master分支
-	$ git push origin dev 	//推送本地的dev分支
-
-//推送分支，就是把该分支上的所有本地提交推送到远程库。推送时，要指定本地分支，这样，Git就会把该分支推送到远程库对应的远程分支上：
-
-
 clone远程库后，默认情况下，只能看到master分支。
 
 如果远程仓库存在dev分支，而你的本地不存在dev，执行：（创建本地分支，同时关联本地分支和远程分支）
@@ -573,13 +564,6 @@ $ git update-git-for-windows
 
 对于所有分支而言， 工作区和暂存区是公共的。 
 	https://blog.csdn.net/stpeace/article/details/84351160 
-
-
-
-
-
-
-
 
 
 

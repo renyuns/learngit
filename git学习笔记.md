@@ -2,6 +2,8 @@
 
 ## 廖雪峰Git教程学习笔记
 
+[TOC]
+
 
 
 ### 概要
@@ -21,14 +23,14 @@
 
 ###  二、Git 安装 :
 
-1. [ Git 下载地址 (Linux/Unix, Mac, Windows 等相关平台)](https://git-scm.com/downloads)
+[ Git 下载地址 (Linux/Unix, Mac, Windows 等相关平台)](https://git-scm.com/downloads)
 
 ```
 ### linux安装git
 $ sudo apt-get install git  
 ### 或者下载安装包，依次执行：./config, make, sudo make install
 
-### 在windows下更新git 版本
+### 在 windows下更新git 版本
 $ git update-git-for-windows
 ```
 
@@ -38,13 +40,15 @@ $ git update-git-for-windows
 
 > 注意：以下所有命令都是在 Git Bash 中运行，不是 cmd
 
-#### 查看Git 版本号
+#### 1. 查看Git 版本号
 
 ```
 $ git --version                 查看 git 的版本
 ```
 
-#### Git config
+
+
+#### 2. git config
 
 ```
 ### 配置所有 Git 仓库的 用户名 和 email 
@@ -73,7 +77,7 @@ $ git config --global color.ui true    让Git显示颜色，会让命令输出�
 
 
 
-#### 1. 初始化本地仓库: 
+#### 3. 初始化本地仓库: 
 
 ```
 $ git init              把当前目录初始化为 git 仓库
@@ -81,7 +85,7 @@ $ git init              把当前目录初始化为 git 仓库
 
 
 
-#### 2. 添加文件到仓库
+#### 4. 添加文件到仓库
 
 ```
 $ git add <file>              	  如: git add readme.txt
@@ -98,7 +102,7 @@ $ git add .
 
 
 
-#### 3. 查看仓库当前状态
+#### 5. 查看仓库当前状态
 
 ```
 $ git status
@@ -106,7 +110,7 @@ $ git status
 
 
 
-#### 4. 查看修改内容
+#### 6. 查看修改内容
 
 ```
 # git diff    查看工作区(work dict)和暂存区(stage)的区别
@@ -119,7 +123,7 @@ $ git status
 
 
 
-#### 5. 查看提交日志
+#### 7. 查看提交日志
 
 ```
 $ git log
@@ -136,7 +140,7 @@ $ git log --graph --pretty=oneline --abbrev-commit
 
 
 
-#### 6. 版本回退
+#### 8. 版本回退
 
 ```
 $ git reset --hard HEAD^
@@ -155,7 +159,7 @@ $ git reset --hard <commit_id>
 
 
 
-#### git revert
+#### 9. git revert
 
 ```
 $ git revert -n commit-id
@@ -195,7 +199,7 @@ $ git commit -m "提交的信息"
 
 
 
-#### 7. 查看命令历史 
+#### 10. 查看命令历史 
 
 ```
 $ git reflog
@@ -204,7 +208,7 @@ $ git reflog
 
 
 
-#### 8. 撤销修改
+#### 11. 撤销修改
 
 ```
 ### 从暂存区恢复工作区（丢弃工作区的修改）
@@ -244,7 +248,7 @@ $ git reset --hard HEAD readme.txt
 
 
 
-#### 9. 删除文件
+#### 12. 删除文件
 ```
 $ git rm <file>
 
@@ -255,7 +259,215 @@ $ git rm <file>
 
 
 
-#### 10.分支
+#### 13. .gitignore 设置忽略文件
+
+```
+# .gitignore，文件用于设置git更新时忽略的文件
+
+# 某个文件被忽略，查看该文件被哪句忽略：
+$ git check-ignore -v App.class
+ .gitignore:3:*.class	App.class
+
+.gitignore 中
+# 排除所有.开头的隐藏文件: 
+	.*
+# 排除所有.class文件:	
+	*.class
+# 不排除 .gitignore 和 App.class:
+	!.gitignore
+	!App.class
+	
+### 把指定文件排除在.gitignore规则外的写法就是!+文件名
+```
+
+> [GitHub提供的各种配置文件](https://github.com/github/gitignore)
+>
+> [在线生成.gitignore文件](https://gitignore.itranswarp.com)
+
+
+
+###  四、相关名词理解 :
+
+##### 1. 工作区 (Working Directory)：自己电脑里能看到的目录
+
+##### 2. 版本库 (Repository)：工作区有一个隐藏目录 .git，这个不算工作区，而是 Git 的版本库
+
+> Git 的版本库里存了很多东西，其中最重要的就是称为 stage（或者叫index）的暂存区，还有 Git 为我们自动创建的第一个分支 master，以及指向 master 的一个指针叫 HEAD
+
+
+
+###  五、远程仓库 :
+
+#### 1. 创建 SSH Key
+
+```
+$ ssh-keygen -t rsa -C "youremail@example.com"
+# 填写自己的邮件地址，然后一路回车，使用默认值即可，由于这个Key也不是用于军事目的，所以也无需设置密码。
+
+# 多账号时，需要创建多个SSH Key：
+$ ssh-keygen -t rsa -C 'xxxxx@company.com' -f ~/.ssh/gitee_id_rsa
+Or
+$ ssh-keygen -t rsa -C 'qd_zhangx@126.com'
+Generating public/private rsa key pair.
+Enter file in which to save the key (C:\Users\12475/.ssh/id_rsa): C:\Users\12475/.ssh/id_rsa_gitlab
+```
+
+> 如果一切顺利的话，可以在用户主目录里找到.ssh目录，里面有 id_rsa 和 id_rsa.pub 两个文件，这两个就是 SSH Key 的秘钥对，id_rsa 是私钥，不能泄露出去，id_rsa.pub 是公钥，可以放心地告诉任何人。
+
+
+
+#### 2. 在 Github 添加 SSH Key 
+
+```
+#### 登录 GitHub ，在 Settings 中找到 SSH 设置项，添加新的 SSH Key，设置任意 title，在 Key 文本框里粘贴 id_rsa.pub 文件的内容
+
+# 复制Key用这种方式复制
+$ cd ~/.ssh
+$ cat id_rsa.pub
+
+$ open ~/.ssh   (Mac 下打开存放 Github 生成的 ssh Key 文件夹)
+$ pbcopy < ~/.ssh/id_rsa.pub  Mac 下拷贝生成的公钥内容
+```
+
+
+
+#### 3. clone 远程库
+
+```
+$ git clone git@github.com:michaelliao/gitskills.git
+# 本地没有仓库，从远程下载仓库，并关联
+# GitHub 支持多种协议,上面是 ssh 协议,还有 https 协议
+
+$ git clone -b <branch name> git@github.com:michaelliao/gitskills.git
+# 克隆远程的一个分支到本地
+```
+
+> 注意：clone远程库后，默认情况下，只能看到master分支。
+
+
+
+#### 4. 关联远程仓库 
+
+```
+$ git remote add origin git@github.com:michaelliao/learngit.git
+# 本地库关联一个远程库 （注意改成自己的）
+# 远程库的名字是origin，这是Git默认的叫法，也可以改成别的
+# 远程库全名叫 git@github.com:michaelliao/learngit.git
+
+### 本地关联多个远程库。如本地git库是learngit，关联3个远程服务器，并分别将这三个远程库起名 github, gitlab, gitee，一般来说，我们只关联一个远程库，就叫origin
+$ git remote add github git@1.2.3.4:/user/learngit.git
+$ git remote add gitlab git@2.3.4.5:/user/learngit.git
+$ git remote add gitee git@3.4.5.6:/user/learngit.git
+
+### clone远程库后，默认情况下，只能看到master分支。
+
+### 在本地创建和远程分支对应的分支(默认进行关联)
+$ git switch -c branch-name origin/branch-name  本地和远程分支的名称最好一致
+### 建立本地分支和远程分支的关联
+$ git branch --set-upstream-to origin/branch-name branch-name
+
+
+# 多人协作的工作模式:
+# 首先，用git push origin <branch-name> 推送本地的修改；
+# 如果推送失败，则因为远程分支比本地的更新，需要先用git pull试图合并；
+# 如果合并有冲突，则解决冲突，并在本地提交；
+# 没有冲突或者解决掉冲突后，再用git push origin <branch-name>推送就能成功！
+
+# 当git pull提示no tracking information，则说明本地分支和远程分支的链接关系没有创建，用命令git branch --set-upstream-to origin/<branch-name> <branch-name>
+
+# 如果远程和本地的版本有冲突，两种方向
+# 	从远程到本地，会需要先链接本地分支和远程分支，其次会要求合并冲突文件，之后才能成功更新至本地。
+# 	从本地到远程，指定如果版本冲突，需要先重复从远程到本地的操作，先整合了不同版本之后再推一次。
+```
+
+
+
+#### 5. 查看关联的远程库
+
+```
+$ git remote       查看远程库信息
+$ git remote -v    查看远程库详细信息
+  origin  git@github.com:michaelliao/learngit.git (fetch)
+  origin  git@github.com:michaelliao/learngit.git (push)
+```
+
+
+
+#### 6. 删除与远程库的关联
+
+```
+$ git remote rm origin  解除了本地库和远程库origin的绑定关系，并不是物理上删除了远程库
+```
+
+
+
+#### 7. 推送到远程仓库
+
+```
+$ git push <远程主机名> <本地分支名>:<远程分支名>
+
+### 将本地的master分支推送到origin主机的master分支
+$ git push origin master
+
+### 如果当前分支与远程分支之间存在追踪关系，则本地分支和远程分支都可以省略。
+$ git push origin
+		
+### 如果当前分支只有一个追踪分支，那么主机名都可以省略。
+$ git push
+
+$ git push -u origin master    第一次推送，使用-u参数，关联本地的master分支和远程的master分支
+
+### 如果当前分支与多个主机存在追踪关系，则可以使用-u选项指定一个默认主机，这样后面就可以不加任何参数使用git push。
+### 将本地的master分支推送到origin主机，同时指定origin为默认主机
+### -u：手动建立追踪关系（tracking）
+$ git push -u origin master
+
+### 不管是否存在对应的远程分支，将本地的所有分支都推送到远程主机
+$ git push --all origin
+
+### 强制推送
+$ git push --force origin
+$ git push --force-with-lease origin
+		
+### 删除指定的远程分支
+$ git push origin :master //推送一个空的本地分支到远程分支
+# 等同于
+$ git push origin --delete master
+```
+> 加上了-u参数，Git 不但会把本地的 master 分支内容推送的远程新的 master 分支，还会把本地的 master 分支和远程的master分支关联起来
+
+
+
+#### 8. 从远程仓库拉取
+
+```
+$ git pull <远程主机名> <远程分支名>:<本地分支名>
+
+### 要取回origin主机的next分支，与本地的master分支合并
+$ git pull origin next:master
+		
+### 如果远程分支(next)要与当前分支合并，则冒号后面的部分可以省略
+$ git pull origin next
+
+### 如果当前分支与远程分支存在追踪关系，git pull就可以省略远程分支名
+$ git pull origin
+		
+### 如果当前分支只有一个追踪分支，连远程主机名都可以省略。
+$ git pull
+
+### 手动建立追踪关系（tracking）
+### 指定master分支追踪origin/next分支
+$ git branch --set-upstream-to origin/next master
+ or
+$ git branch -u origin/next master
+
+### 如果合并需要采用rebase模式，可以使用–rebase选项。
+$ git pull --rebase <远程主机名> <远程分支名>:<本地分支名>
+```
+
+
+
+### 六、分支
 
 ```
 # HEAD 指向当前分支
@@ -298,41 +510,39 @@ $ git log --graph --pretty=oneline --abbrev-commit
 
 当前分支如下：
 
-![image-20230327173318911](C:\Users\12475\AppData\Roaming\Typora\typora-user-images\image-20230327173318911.png)
+<img src="C:\Users\12475\AppData\Roaming\Typora\typora-user-images\image-20230327173318911.png" alt="image-20230327173318911" style="zoom:80%;" />
 
 
 
 使用Fast forward 合并后，如下：
 
-![1679908335549](C:\Users\12475\Desktop\1679908335549.png)
-
-
+<img src="C:\Users\12475\AppData\Roaming\Typora\typora-user-images\1679908335549.png" alt="1679908335549" style="zoom:80%;" />
 
 使用 --no-ff (不使用fast forward) 合并后如下（master 多了一个commit 提交）：
 
-![1679908110753](C:\Users\12475\Desktop\1679908110753.png)
+<img src="C:\Users\12475\AppData\Roaming\Typora\typora-user-images\1679908110753.png" alt="1679908110753" style="zoom:80%;" />
 
 
 
 如果两个分支分开后，都有提交，此时合并可能存在冲突，需要首先解决冲突再合并。
 
-![image-20230327173430680](C:\Users\12475\AppData\Roaming\Typora\typora-user-images\image-20230327173430680.png)
+<img src="C:\Users\12475\AppData\Roaming\Typora\typora-user-images\image-20230327173430680.png" alt="image-20230327173430680" style="zoom:80%;" />
 
 
 
 解决冲突，并合并：
 
-![image-20230327173450358](C:\Users\12475\AppData\Roaming\Typora\typora-user-images\image-20230327173450358.png)
+<img src="C:\Users\12475\AppData\Roaming\Typora\typora-user-images\image-20230327173450358.png" alt="image-20230327173450358" style="zoom:80%;" />
 
 
 
 解决冲突后，master 还可以再合并到（更新）dev 分支。
 
-![image-20230327173513442](C:\Users\12475\AppData\Roaming\Typora\typora-user-images\image-20230327173513442.png)
+<img src="C:\Users\12475\AppData\Roaming\Typora\typora-user-images\image-20230327173513442.png" alt="image-20230327173513442" style="zoom:80%;" />
 
 
 
-分支合并小结：
+**分支合并小结：**
 
 领先分支合并到落后分支，会改变落后分支(常用)
 落后分支合并到领先分支，会提示"Already up to data."
@@ -350,9 +560,7 @@ $ git log --graph --pretty=oneline --abbrev-commit
 
 
 
-
-
-#### 标签
+### 七、标签
 
 ```
 $ git tag  查看所有的标签（注意不是按时间顺序列出，而是按字母顺序排序）
@@ -380,16 +588,46 @@ $ git push origin :refs/tags/v0.9
 
 
 
-#### git rebase
+###  八、stash
 
-[git rebase讲解](https://juejin.cn/post/6969101234338791432)
+```
+$ git stash  保存当前工作区和暂存区的修改状态，git status 查看是干净的
+$ git stash save "comment"  保存现场，并添加备注信息
+$ git stash list  查看保存现场的列表
+$ git stash pop   恢复的同时把 stash 内容也删除
+$ git stash apply  恢复现场，stash内容并不删除
+$ git stash drop   删除 stash 内容
+$ git stash apply stash@{0}  多次stash，恢复的时候，先用git stash list查看，然后恢复指定的stash
 
-git push --force
-git push --force-with-lease
+
+$ git stash list
+ stash@{index}: WIP on [分支名]: [最近一次的commitID] [最近一次的提交信息]
+
+
+# 注意: git stash不能将未被追踪的文件(untracked file)压栈,也就是从未被git add过的文件, 所以在git stash之前一定要用git status确认没有Untracked files
+
+
+### 在stash中包含未跟踪的文件
+$ git stash --include-untracked
+ or
+$ git stash -u
+
+$ git stash -a //其中-a代表所有（追踪的&未追踪的）
+
+# 通常在 dev 分支开发时,需要有紧急 bug 需要马上处理,保存现在修改的文件等,先修复 bug 后再回来继续工作的情况
+```
+
+> [为什么要用git stash](https://blog.csdn.net/ForMyQianDuan/article/details/78750434)
 
 
 
-#### 修改已经提交的commit 信息
+### 九、git rebase
+
+> [git rebase讲解](https://juejin.cn/post/6969101234338791432)
+
+
+
+### 十、修改已经提交的commit 信息
 
 ```
 修改最近一次提交的信息：
@@ -419,317 +657,34 @@ git push --force-with-lease
 
 
 
-#### .gitignore 设置忽略文件
+###  十一、相关工具及网站
 
-```
-# .gitignore，文件用于设置git更新时忽略的文件
-
-# 某个文件被忽略，查看该文件被哪句忽略：
-$ git check-ignore -v App.class
- .gitignore:3:*.class	App.class
-
-.gitignore 中
-# 排除所有.开头的隐藏文件: 
-	.*
-# 排除所有.class文件:	
-	*.class
-# 不排除 .gitignore 和 App.class:
-	!.gitignore
-	!App.class
-	
-### 把指定文件排除在.gitignore规则外的写法就是!+文件名
-```
-
-> [GitHub提供的各种配置文件](https://github.com/github/gitignore)
+> [Git教程-廖雪峰](https://www.liaoxuefeng.com/wiki/896043488029600)
 >
-> [在线生成.gitignore文件](https://gitignore.itranswarp.com)
-
-
-
-###  四、相关名词理解 :
-
-###### 1. 工作区 (Working Directory)：自己电脑里能看到的目录
-
-###### 2. 版本库 (Repository)：工作区有一个隐藏目录 .git，这个不算工作区，而是 Git 的版本库
-
-> Git 的版本库里存了很多东西，其中最重要的就是称为 stage（或者叫index）的暂存区，还有 Git 为我们自动创建的第一个分支 master，以及指向 master 的一个指针叫 HEAD
-
-
-
-###  五、远程仓库 :
-
-#### 1. [创建 SSH Key](https://docs.github.com/en/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#generating-a-new-ssh-key)
-```
-$ ssh-keygen -t rsa -C "youremail@example.com"
-# 填写自己的邮件地址，然后一路回车，使用默认值即可，由于这个Key也不是用于军事目的，所以也无需设置密码。
-
-# 多账号时，需要创建多个SSH Key：
-$ ssh-keygen -t rsa -C 'xxxxx@company.com' -f ~/.ssh/gitee_id_rsa
-Or
-$ ssh-keygen -t rsa -C 'qd_zhangx@126.com'
-Generating public/private rsa key pair.
-Enter file in which to save the key (C:\Users\12475/.ssh/id_rsa): C:\Users\12475/.ssh/id_rsa_gitlab
-```
-
-> 如果一切顺利的话，可以在用户主目录里找到.ssh目录，里面有 id_rsa 和 id_rsa.pub 两个文件，这两个就是 SSH Key 的秘钥对，id_rsa 是私钥，不能泄露出去，id_rsa.pub 是公钥，可以放心地告诉任何人。
-
-#### 2.在 Github 添加 SSH Key 
-```
-#### 登录 GitHub ，在 Settings 中找到 SSH 设置项，添加新的 SSH Key，设置任意 title，在 Key 文本框里粘贴 id_rsa.pub 文件的内容
-
-# 复制Key用这种方式复制
-$ cd ~/.ssh
-$ cat id_rsa.pub
-
-$ open ~/.ssh   (Mac 下打开存放 Github 生成的 ssh Key 文件夹)
-$ pbcopy < ~/.ssh/id_rsa.pub  Mac 下拷贝生成的公钥内容
-```
-
-
-
-#### clone 远程库
-
-```
-$ git clone git@github.com:michaelliao/gitskills.git
-# 本地没有仓库，从远程下载仓库，并关联
-# GitHub 支持多种协议,上面是 ssh 协议,还有 https 协议
-
-$ git clone -b <branch name> git@github.com:michaelliao/gitskills.git
-# 克隆远程的一个分支到本地
-```
-
-> 注意：clone远程库后，默认情况下，只能看到master分支。
-
-
-
-#### 3. 关联远程仓库 
-
-```
-$ git remote add origin git@github.com:michaelliao/learngit.git
-# 本地库关联一个远程库 （注意改成自己的）
-# 远程库的名字是origin，这是Git默认的叫法，也可以改成别的
-# 远程库全名叫 git@github.com:michaelliao/learngit.git
-
-### 本地关联多个远程库。如本地git库是learngit，关联3个远程服务器，并分别将这三个远程库起名 github, gitlab, gitee，一般来说，我们只关联一个远程库，就叫origin
-$ git remote add github git@1.2.3.4:/user/learngit.git
-$ git remote add gitlab git@2.3.4.5:/user/learngit.git
-$ git remote add gitee git@3.4.5.6:/user/learngit.git
-
-### clone远程库后，默认情况下，只能看到master分支。
-
-### 在本地创建和远程分支对应的分支(默认进行关联)
-$ git switch -c branch-name origin/branch-name  本地和远程分支的名称最好一致
-### 建立本地分支和远程分支的关联
-$ git branch --set-upstream-to origin/branch-name branch-name
-
-
-# 多人协作的工作模式:
-# 首先，用git push origin <branch-name> 推送本地的修改；
-# 如果推送失败，则因为远程分支比本地的更新，需要先用git pull试图合并；
-# 如果合并有冲突，则解决冲突，并在本地提交；
-# 没有冲突或者解决掉冲突后，再用git push origin <branch-name>推送就能成功！
-
-# 当git pull提示no tracking information，则说明本地分支和远程分支的链接关系没有创建，用命令git branch --set-upstream-to origin/<branch-name> <branch-name>
-
-# 如果远程和本地的版本有冲突，两种方向
-# 	从远程到本地，会需要先链接本地分支和远程分支，其次会要求合并冲突文件，之后才能成功更新至本地。
-# 	从本地到远程，指定如果版本冲突，需要先重复从远程到本地的操作，先整合了不同版本之后再推一次。
-```
-
-
-
-#### 查看关联的远程库
-
-```
-$ git remote       查看远程库信息
-$ git remote -v    查看远程库详细信息
-  origin  git@github.com:michaelliao/learngit.git (fetch)
-  origin  git@github.com:michaelliao/learngit.git (push)
-```
-
-
-
-#### 删除与远程库的关联
-
-```
-$ git remote rm origin  解除了本地库和远程库origin的绑定关系，并不是物理上删除了远程库
-```
-
-
-
-#### 4. 推送到远程仓库
-
-```
-$ git push <远程主机名> <本地分支名>:<远程分支名>
-
-### 将本地的master分支推送到origin主机的master分支
-$ git push origin master
-
-### 如果当前分支与远程分支之间存在追踪关系，则本地分支和远程分支都可以省略。
-$ git push origin
-		
-### 如果当前分支只有一个追踪分支，那么主机名都可以省略。
-$ git push
-
-$ git push -u origin master    第一次推送，使用-u参数，关联本地的master分支和远程的master分支
-
-### 如果当前分支与多个主机存在追踪关系，则可以使用-u选项指定一个默认主机，这样后面就可以不加任何参数使用git push。
-### 将本地的master分支推送到origin主机，同时指定origin为默认主机
-### -u：手动建立追踪关系（tracking）
-$ git push -u origin master
-
-### 不管是否存在对应的远程分支，将本地的所有分支都推送到远程主机
-$ git push --all origin
-
-### 强制推送
-$ git push --force origin
-		
-### 删除指定的远程分支
-$ git push origin :master //推送一个空的本地分支到远程分支
-# 等同于
-$ git push origin --delete master
-```
-> 加上了-u参数，Git 不但会把本地的 master 分支内容推送的远程新的 master 分支，还会把本地的 master 分支和远程的master分支关联起来
-
-
-
-#### 从远程仓库下载
-
-```
-$ git pull <远程主机名> <远程分支名>:<本地分支名>
-
-### 要取回origin主机的next分支，与本地的master分支合并
-$ git pull origin next:master
-		
-### 如果远程分支(next)要与当前分支合并，则冒号后面的部分可以省略
-$ git pull origin next
-
-### 如果当前分支与远程分支存在追踪关系，git pull就可以省略远程分支名
-$ git pull origin
-		
-### 如果当前分支只有一个追踪分支，连远程主机名都可以省略。
-$ git pull
-
-### 手动建立追踪关系（tracking）
-### 指定master分支追踪origin/next分支
-$ git branch --set-upstream-to origin/next master
- or
-$ git branch -u origin/next master
-
-### 如果合并需要采用rebase模式，可以使用–rebase选项。
-$ git pull --rebase <远程主机名> <远程分支名>:<本地分支名>
-```
-
-
-
-
-
-###  六、stash
-```
-$ git stash  保存当前工作区和暂存区的修改状态，git status 查看是干净的
-$ git stash save "comment"  保存现场，并添加备注信息
-$ git stash list  查看保存现场的列表
-$ git stash pop   恢复的同时把 stash 内容也删除
-$ git stash apply  恢复现场，stash内容并不删除
-$ git stash drop   删除 stash 内容
-$ git stash apply stash@{0}  多次stash，恢复的时候，先用git stash list查看，然后恢复指定的stash
-
-
-$ git stash list
- stash@{index}: WIP on [分支名]: [最近一次的commitID] [最近一次的提交信息]
-
-
-# 注意: git stash不能将未被追踪的文件(untracked file)压栈,也就是从未被git add过的文件, 所以在git stash之前一定要用git status确认没有Untracked files
-
-
-### 在stash中包含未跟踪的文件
-$ git stash --include-untracked
- or
-$ git stash -u
-
-$ git stash -a //其中-a代表所有（追踪的&未追踪的）
-
-# 通常在 dev 分支开发时,需要有紧急 bug 需要马上处理,保存现在修改的文件等,先修复 bug 后再回来继续工作的情况
-
-
-```
-
+> [Git教程-易百教程](https://www.yiibai.com/git)
+>
+> [Git官方文档](https://git-scm.com/book/zh/v2)
+>
+> [git修改已经提交的commit信息](https://www.cnblogs.com/ykpkris/p/15356969.html)
+>
+> [git 教程 --git revert 命令](https://zhuanlan.zhihu.com/p/356394164)
+>
 > [为什么要用git stash](https://blog.csdn.net/ForMyQianDuan/article/details/78750434)
-
-
-
-###  七、标签
-
-```
-$ git tag  查看所有的标签（注意不是按时间顺序列出，而是按字母顺序排序）
-$ git show <tagname>  查看标签信息
-
-$ git tag <tagname>  打标签(默认标签是打在最新提交的commit上) 如: git tag v1.0
-$ git tag <tagname> <commit_id>  给对应的 commit_id 打标签
-$ git tag -a <tagname> -m "标签说明信息" <commit_id>  创建带有说明的标签，用-a指定标签名，-m指定说明文字
-
-$ git tag -d <tagname>  删除一个本地标签
-$ git push origin :refs/tags/<tagname>  删除一个远程标签
-
-$ git push origin <tagname>  推送一个本地标签到远程
-$ git push origin --tags     推送全部尚未推送到远程的本地标签
-
-
-### 删除远程标签,最好先删除本地标签,然后再删除远程标签, 如:删除标签 v0.9
-$ git tag -d v0.9
-$ git push origin :refs/tags/v0.9
-```
-
-
-
-a) 默认创建的标签都只存储在本地，不会自动推送到远程
-
-b) 标签总是和某个commit挂钩。如果这个commit既出现在master分支，又出现在dev分支，那么在这两个分支上都可以看到这个标签。
-
-
-
-###  八、相关工具及网站
-
-1. [Git 官网](https://git-scm.com/)
-2. [GitHub-开源协作社区](https://github.com/)
-3. [Gitee(码云)-国内开源协作社区](https://gitee.com/)
-4. [15 分钟学会 Git](https://try.github.io/levels/1/challenges/1)
-5. [Git Book](https://git-scm.com/book/zh/v2)
-
-
-
-[Git教程-廖雪峰](https://www.liaoxuefeng.com/wiki/896043488029600)
-
-[Git教程-易百教程](https://www.yiibai.com/git)
-
-[Git官方文档](https://git-scm.com/book/zh/v2)
-
-[git修改已经提交的commit信息](https://www.cnblogs.com/ykpkris/p/15356969.html)
-
-[git 教程 --git revert 命令](https://zhuanlan.zhihu.com/p/356394164)
-
-[为什么要用git stash](https://blog.csdn.net/ForMyQianDuan/article/details/78750434)
-
-[git rebase讲解](https://juejin.cn/post/6969101234338791432)
-
-[GitHub提供的.gitignore配置文件](https://github.com/github/gitignore)
-
-[实际项目中如何使用Git做分支管理](https://zhuanlan.zhihu.com/p/38772378)
-
-[Git配置多个SSH-Key](https://www.cnblogs.com/cosmos-wong/p/15868724.html)
-
-[对于所有分支而言， 工作区和暂存区是公共的](https://blog.csdn.net/stpeace/article/details/84351160)
+>
+> [git rebase讲解](https://juejin.cn/post/6969101234338791432)
+>
+> [GitHub提供的.gitignore配置文件](https://github.com/github/gitignore)
+>
+> [实际项目中如何使用Git做分支管理](https://zhuanlan.zhihu.com/p/38772378)
+>
+> [对于所有分支而言， 工作区和暂存区是公共的](https://blog.csdn.net/stpeace/article/details/84351160)
 
 
 
 
-
-
-
-
-##### 九、参与开源项目
+### 十二、参与开源项目
 基本步骤：
 1. 将他人的开源仓库 fork 到自己的 Github 上；
-2. 将该开源仓库从自己的 Github 上克隆到本地；`git clone 项目地址`
+2. 将该开源仓库从自己的 Github 上克隆到本地；git clone 项目地址
 3. 修改该项目；
 4. 推送一个 pull request 到他人开源仓库。（当然他人可选择接受或不接受）
