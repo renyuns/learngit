@@ -88,3 +88,6 @@ try to make a pull request! thanks bro.
 要挨多少打才能成角啊
 
 fighting fighting fighting 
+
+### edanzhang-hub
+莫听穿林打叶声，何妨吟啸且徐行。竹杖芒鞋轻胜马，谁怕？一蓑烟雨任平生。
